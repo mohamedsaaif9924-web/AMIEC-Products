@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Al Mulla Exchange Products & Services</title>
+  <title>AMIEC Products & Services</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -72,11 +72,20 @@
       background: #e6edf5;
       border-left-color: #0a2540;
     }
-    .country-item .flag {
+    .country-item .flag-img {
+      width: 28px;
+      height: 20px;
+      border-radius: 3px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .country-item .flag-text {
       font-size: 1.4rem;
       line-height: 1;
       width: 32px;
       text-align: center;
+      flex-shrink: 0;
     }
     .country-item .name {
       font-size: 0.95rem;
@@ -150,31 +159,35 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    .main-header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #0a2540, #2b5c8a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .main-header .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 12px;
     }
-    .main-header h1 .flag {
+    .main-header .brand .flag-img {
+      width: 40px;
+      height: 28px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+    }
+    .main-header .brand .flag-text {
       font-size: 2rem;
-      -webkit-text-fill-color: initial;
+      line-height: 1;
     }
-    .main-header h1 .company-name {
-      background: none;
-      -webkit-text-fill-color: #0a2540;
+    .main-header .brand .company-name {
+      font-size: 1.5rem;
       font-weight: 700;
+      color: #0a2540;
     }
-    .main-header h1 .country-name {
-      background: none;
-      -webkit-text-fill-color: #475569;
+    .main-header .brand .country-name {
+      font-size: 1.3rem;
       font-weight: 400;
-      font-size: 1.4rem;
+      color: #64748b;
+    }
+    .main-header .brand .separator {
+      color: #cbd5e1;
+      font-weight: 300;
     }
     .main-header .stats {
       margin-left: auto;
@@ -345,7 +358,8 @@
       .filter-bar { padding: 12px 16px; flex-direction: column; align-items: stretch; }
       .filter-bar input, .filter-bar select { min-width: unset; }
       .main-header { padding: 12px 16px; flex-wrap: wrap; }
-      .main-header h1 { font-size: 1.3rem; }
+      .main-header .brand .company-name { font-size: 1.1rem; }
+      .main-header .brand .country-name { font-size: 1rem; }
       .main-body { padding: 16px 16px 40px; }
       .detail-grid { grid-template-columns: 1fr; }
       .detail-item .label { min-width: 100px; }
@@ -353,8 +367,9 @@
     @media (max-width: 480px) {
       .sidebar-header h2 { font-size: 1rem; }
       .country-item { padding: 8px 12px; }
-      .main-header h1 { font-size: 1.1rem; }
-      .main-header h1 .country-name { font-size: 1rem; }
+      .main-header .brand .company-name { font-size: 0.95rem; }
+      .main-header .brand .country-name { font-size: 0.85rem; }
+      .main-header .brand .flag-img { width: 30px; height: 20px; }
     }
 
     .loading, .error { padding: 40px; text-align: center; color: #475569; }
@@ -393,11 +408,13 @@
 
     <!-- Header -->
     <div class="main-header">
-      <h1>
-        <span class="flag" id="countryFlagEmoji">🌍</span>
-        <span class="company-name">Al Mulla Exchange</span>
-        <span class="country-name" id="countryNameDisplay">– Select a country</span>
-      </h1>
+      <div class="brand">
+        <img id="headerFlagImg" class="flag-img" src="" alt="Flag" style="display:none;" />
+        <span id="headerFlagText" class="flag-text">🌍</span>
+        <span class="company-name">AMIEC</span>
+        <span class="separator">–</span>
+        <span class="country-name" id="countryNameDisplay">Select a country</span>
+      </div>
       <div class="stats" id="statsDisplay">0 products</div>
     </div>
 
@@ -418,7 +435,7 @@
   const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
 
   // =============================================================
-  //  COUNTRY -> FLAG EMOJI MAP
+  //  COUNTRY -> FLAG EMOJI MAP (fallback)
   // =============================================================
   const countryFlagEmoji = {
     "Afghanistan": "🇦🇫", "Albania": "🇦🇱", "Algeria": "🇩🇿", "Armenia": "🇦🇲",
@@ -443,7 +460,18 @@
     "United Arab Emirates": "🇦🇪", "United Kingdom": "🇬🇧", "United States Of America": "🇺🇸",
     "Uzbekistan": "🇺🇿", "Vietnam": "🇻🇳"
   };
-  function getFlag(country) { return countryFlagEmoji[country] || '🌍'; }
+
+  // =============================================================
+  //  GET FLAG IMAGE URL (flagpedia)
+  // =============================================================
+  function getFlagImageUrl(country) {
+    const code = country.toLowerCase().replace(/ /g, '-');
+    return `https://flagpedia.net/data/flags/h60/${code}.webp`;
+  }
+
+  function getFlagEmoji(country) {
+    return countryFlagEmoji[country] || '🌍';
+  }
 
   // =============================================================
   //  STATE
@@ -459,7 +487,8 @@
   const countrySearch = document.getElementById('countrySearch');
   const mainBody = document.getElementById('mainBody');
   const countryNameDisplay = document.getElementById('countryNameDisplay');
-  const countryFlagEmojiEl = document.getElementById('countryFlagEmoji');
+  const headerFlagImg = document.getElementById('headerFlagImg');
+  const headerFlagText = document.getElementById('headerFlagText');
   const statsDisplay = document.getElementById('statsDisplay');
   const globalSearch = document.getElementById('globalSearch');
   const filterProductType = document.getElementById('filterProductType');
@@ -492,6 +521,32 @@
     else if (lv.includes('sftp')) cls += ' sftp';
     else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
     return `<span class="${cls}">${escapeHtml(value)}</span>`;
+  }
+
+  // =============================================================
+  //  UPDATE HEADER FLAG
+  // =============================================================
+  function updateHeaderFlag(country) {
+    const imgUrl = getFlagImageUrl(country);
+    const emoji = getFlagEmoji(country);
+
+    // Try to show image first
+    headerFlagImg.style.display = 'block';
+    headerFlagImg.src = imgUrl;
+    headerFlagImg.alt = country + ' flag';
+    headerFlagImg.onerror = function() {
+      // If image fails, show emoji
+      headerFlagImg.style.display = 'none';
+      headerFlagText.style.display = 'inline';
+      headerFlagText.textContent = emoji;
+    };
+    headerFlagText.style.display = 'none';
+
+    // If image loads successfully, hide emoji
+    headerFlagImg.onload = function() {
+      headerFlagImg.style.display = 'block';
+      headerFlagText.style.display = 'none';
+    };
   }
 
   // =============================================================
@@ -542,8 +597,11 @@
       const div = document.createElement('div');
       div.className = 'country-item';
       div.dataset.country = country;
+      const flagImg = getFlagImageUrl(country);
       div.innerHTML = `
-        <span class="flag">${getFlag(country)}</span>
+        <img class="flag-img" src="${flagImg}" alt="${country} flag" 
+             onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+        <span class="flag-text" style="display:none;">${getFlagEmoji(country)}</span>
         <span class="name">${escapeHtml(country)}</span>
         <span class="count">${count}</span>
       `;
@@ -557,12 +615,10 @@
   // =============================================================
   function populateFilterOptionsForCountry(country) {
     const rows = countryDataMap[country] || [];
-    // Get unique values from this country's rows
     const productTypes = [...new Set(rows.map(r => r['Product Type']).filter(Boolean))].sort();
     const correspondents = [...new Set(rows.map(r => r['Correspondent']).filter(Boolean))].sort();
     const currencies = [...new Set(rows.map(r => r['Currency']).filter(Boolean))].sort();
 
-    // Keep current selected values if they still exist, else reset to empty
     const currentProduct = filterProductType.value;
     const currentCorr = filterCorrespondent.value;
     const currentCurr = filterCurrency.value;
@@ -574,7 +630,6 @@
     filterCurrency.innerHTML = '<option value="">Currency</option>' +
       currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 
-    // Restore selections if they exist in the new lists
     if (productTypes.includes(currentProduct)) filterProductType.value = currentProduct;
     else filterProductType.value = '';
     if (correspondents.includes(currentCorr)) filterCorrespondent.value = currentCorr;
@@ -588,16 +643,12 @@
   // =============================================================
   function selectCountry(country) {
     currentCountry = country;
-    // Update sidebar active state
     document.querySelectorAll('.country-item').forEach(el => {
       el.classList.toggle('active', el.dataset.country === country);
     });
-    // Update header
-    countryNameDisplay.textContent = `– ${country}`;
-    countryFlagEmojiEl.textContent = getFlag(country);
-    // Update filters to show only this country's options
+    countryNameDisplay.textContent = country;
+    updateHeaderFlag(country);
     populateFilterOptionsForCountry(country);
-    // Apply filters (which will render the products)
     applyFilters();
   }
 
@@ -631,7 +682,7 @@
   }
 
   // =============================================================
-  //  RENDER FILTERED RESULTS (grouped by Correspondent)
+  //  RENDER FILTERED RESULTS
   // =============================================================
   function renderFilteredResults(rows) {
     if (rows.length === 0) {
