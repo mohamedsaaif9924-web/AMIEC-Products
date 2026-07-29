@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AMIEC Product Playbook</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f9fc;
+      padding: 24px;
+      color: #1a202c;
+    }
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      border: 1px solid #eaedf2;
+      overflow: hidden;
+    }
+    .header {
+      padding: 24px 32px;
+      background: #fff;
+      border-bottom: 1px solid #eaedf2;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #0a2540, #2b5c8a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header h1 small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #64748b;
+      -webkit-text-fill-color: #64748b;
+      margin-left: 10px;
+    }
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat-badge {
+      background: #f1f4f9;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    .stat-badge span { font-weight: 700; color: #0a2540; }
+    .last-updated {
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #f8fafc;
+      padding: 4px 14px;
+      border-radius: 100px;
+      border: 1px solid #e2e8f0;
+    }
+    .toolbar {
+      padding: 16px 32px;
+      background: #fafcff;
+      border-bottom: 1px solid #eaedf2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1 1 280px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: 1px solid #dce1e8;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat 14px center;
+      transition: 0.2s;
+    }
+    .search-box input:focus { outline: none; border-color: #0a2540; box-shadow: 0 0 0 3px rgba(10,37,64,0.08); }
+    .filter-select {
+      padding: 10px 16px;
+      border: 1px solid #dce1e8;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      background: white;
+      min-width: 180px;
+      cursor: pointer;
+    }
+    .filter-select:focus { outline: none; border-color: #0a2540; }
+    .btn-clear, .btn-retry {
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.15s;
+      border: 1px solid #dce1e8;
+      background: #f1f4f9;
+      color: #475569;
+    }
+    .btn-clear:hover { background: #e2e8f0; }
+    .btn-retry {
+      background: #0a2540;
+      border: none;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-retry:hover { background: #1a3a5a; }
+    .table-wrap {
+      overflow-x: auto;
+      padding: 0 4px 4px 4px;
+      max-height: 72vh;
+      overflow-y: auto;
+    }
+    .table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      min-width: 1000px;
+    }
+    .table-wrap thead {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .table-wrap th {
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 600;
+      padding: 12px 12px;
+      text-align: left;
+      border-bottom: 2px solid #dce1e8;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .table-wrap th:hover { background: #e6edf5; }
+    .table-wrap th::after { content: " ↕"; font-size: 0.6rem; color: #94a3b8; }
+    .table-wrap td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: middle;
+      max-width: 280px;
+      word-break: break-word;
+      line-height: 1.4;
+      color: #1e293b;
+    }
+    .table-wrap tbody tr:nth-child(even) { background: #fafcff; }
+    .table-wrap tbody tr:hover { background: #f1f5f9; }
+    .badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      background: #dcfce7;
+      color: #166534;
+    }
+    .badge.inactive { background: #fee2e2; color: #991b1b; }
+    .badge.api { background: #dbeafe; color: #1e40af; }
+    .badge.sftp { background: #fef3c7; color: #92400e; }
+    .badge.file { background: #e0e7ff; color: #3730a3; }
+    .state {
+      padding: 60px 24px;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #475569;
+    }
+    .state.error { color: #b91c1c; }
+    .state code {
+      background: #f1f5f9;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+    .record-count {
+      font-size: 0.85rem;
+      color: #475569;
+      padding: 0 32px 16px 32px;
+      font-weight: 500;
+    }
+    .record-count span { font-weight: 700; color: #0a2540; }
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px; }
+      .header h1 { font-size: 1.4rem; }
+      .toolbar { padding: 16px 20px; flex-direction: column; align-items: stretch; }
+      .filter-select { min-width: unset; }
+      .table-wrap td, .table-wrap th { padding: 6px 4px; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📘 AMIEC Product Playbook <small>Global Remittance & Payments</small></h1>
+    <div class="stats">
+      <div class="stat-badge">📋 <span id="totalRecords">0</span> services</div>
+      <div class="last-updated" id="lastUpdated">⏳ Loading…</div>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="🔍 Search by country, currency, correspondent…" />
+    </div>
+    <select class="filter-select" id="columnFilter">
+      <option value="">📌 Filter by specific column…</option>
+    </select>
+    <button class="btn-clear" id="clearFilters">✕ Clear</button>
+    <button class="btn-retry" id="retryBtn">⟳ Retry</button>
+  </div>
+  <div class="table-wrap" id="tableWrapper">
+    <div class="state">⏳ Loading your product data from GitHub…</div>
+  </div>
+  <div class="record-count">Showing <span id="recordCount">0</span> records</div>
+</div>
+
+<script>
+  // =============================================================
+  //  ✅  CORRECT URL – using your actual username and repo
+  // =============================================================
+  const BASE_URL = 'https://raw.githubusercontent.com/mohamedsaaiif9924/AMIEC-Products/main/data.xlsx';
+
+  // =============================================================
+  //  APP LOGIC (no changes needed below)
+  // =============================================================
+  let fullData = [];
+  let headers = [];
+  let currentSort = { column: null, direction: 'asc' };
+
+  const tableWrapper = document.getElementById('tableWrapper');
+  const searchInput = document.getElementById('searchInput');
+  const columnFilter = document.getElementById('columnFilter');
+  const clearBtn = document.getElementById('clearFilters');
+  const retryBtn = document.getElementById('retryBtn');
+  const lastUpdatedSpan = document.getElementById('lastUpdated');
+  const totalRecordsSpan = document.getElementById('totalRecords');
+  const recordCountSpan = document.getElementById('recordCount');
+
+  async function loadData() {
+    try {
+      tableWrapper.innerHTML = '<div class="state">⏳ Fetching Excel file from GitHub…</div>';
+      const url = `${BASE_URL}?v=${Date.now()}`;
+      console.log('Fetching:', url);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status} – ${response.statusText}`);
+
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+      if (!json.length) throw new Error('No data found in the Excel sheet.');
+
+      fullData = json;
+      headers = Object.keys(fullData[0]);
+
+      populateColumnFilter();
+      applyFiltersAndRender();
+
+      totalRecordsSpan.textContent = fullData.length;
+
+      const lastMod = response.headers.get('last-modified');
+      lastUpdatedSpan.textContent = lastMod ? `📅 ${new Date(lastMod).toLocaleString()}` : `📅 ${new Date().toLocaleString()}`;
+
+    } catch (err) {
+      tableWrapper.innerHTML = `
+        <div class="state error">
+          ❌ Failed to load data<br/>
+          <span style="font-size:0.9rem; color:#475569;">${err.message}</span><br/>
+          <code>${BASE_URL}</code><br/><br/>
+          <span style="font-size:0.85rem; color:#64748b;">
+            Make sure your repository is <strong>public</strong> and the file exists.<br/>
+            Click <strong>"Retry"</strong> after verifying.
+          </span>
+        </div>
+      `;
+      console.error(err);
+    }
+  }
+
+  function populateColumnFilter() {
+    columnFilter.innerHTML = '<option value="">📌 Filter by specific column…</option>';
+    headers.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = h;
+      columnFilter.appendChild(opt);
+    });
+  }
+
+  function renderTable(dataArray) {
+    if (!dataArray || dataArray.length === 0) {
+      tableWrapper.innerHTML = '<div class="state">🔎 No records match your current filters.</div>';
+      recordCountSpan.textContent = '0';
+      return;
+    }
+    recordCountSpan.textContent = dataArray.length;
+
+    let html = '<table><thead><tr>';
+    headers.forEach(h => {
+      html += `<th data-col="${h}">${h}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    dataArray.forEach(row => {
+      html += '<tr>';
+      headers.forEach(h => {
+        let val = row[h] !== undefined && row[h] !== null ? row[h] : '';
+        const lowerH = h.toLowerCase();
+
+        if (lowerH.includes('active') || lowerH.includes('status')) {
+          const isActive = val.toString().toLowerCase().includes('yes') || val.toString().toLowerCase().includes('active');
+          val = isActive ? `<span class="badge">${val}</span>` : `<span class="badge inactive">${val}</span>`;
+        } else if (lowerH.includes('interface') && val) {
+          const lv = val.toLowerCase();
+          let cls = 'badge';
+          if (lv.includes('api')) cls += ' api';
+          else if (lv.includes('sftp')) cls += ' sftp';
+          else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
+          val = `<span class="${cls}">${val}</span>`;
+        } else {
+          val = escapeHTML(val);
+        }
+        html += `<td>${val}</td>`;
+      });
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    tableWrapper.innerHTML = html;
+
+    document.querySelectorAll('th').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.getAttribute('data-col');
+        sortByColumn(col);
+      });
+    });
+  }
+
+  function sortByColumn(col) {
+    if (currentSort.column === col) {
+      currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentSort.column = col;
+      currentSort.direction = 'asc';
+    }
+    applyFiltersAndRender();
+  }
+
+  function applyFiltersAndRender() {
+    const search = searchInput.value.trim().toLowerCase();
+    const selectedCol = columnFilter.value;
+
+    let filtered = [...fullData];
+
+    if (selectedCol) {
+      filtered = filtered.filter(row => {
+        const cell = (row[selectedCol] || '').toString().toLowerCase();
+        return cell.includes(search);
+      });
+    } else if (search) {
+      filtered = filtered.filter(row => {
+        return headers.some(h => {
+          const cell = (row[h] || '').toString().toLowerCase();
+          return cell.includes(search);
+        });
+      });
+    }
+
+    if (currentSort.column) {
+      const col = currentSort.column;
+      filtered.sort((a, b) => {
+        const va = (a[col] || '').toString().toLowerCase();
+        const vb = (b[col] || '').toString().toLowerCase();
+        if (va < vb) return currentSort.direction === 'asc' ? -1 : 1;
+        if (va > vb) return currentSort.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    renderTable(filtered);
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  searchInput.addEventListener('input', applyFiltersAndRender);
+  columnFilter.addEventListener('change', applyFiltersAndRender);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    columnFilter.value = '';
+    currentSort = { column: null, direction: 'asc' };
+    applyFiltersAndRender();
+  });
+  retryBtn.addEventListener('click', loadData);
+
+  loadData();
+</script>
+</body>
+</html>
