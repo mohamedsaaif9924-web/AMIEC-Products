@@ -3,17 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AMIEC Product Playbook</title>
+  <title>Al Mulla Exchange - Product Playbook</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       background: #f6f9fc;
@@ -21,11 +17,7 @@
       height: 100vh;
       overflow: hidden;
     }
-    .app {
-      display: flex;
-      height: 100vh;
-      background: white;
-    }
+    .app { display: flex; height: 100vh; background: white; }
 
     /* ----- Sidebar ----- */
     .sidebar {
@@ -59,7 +51,7 @@
     }
     .sidebar-header input:focus {
       border-color: #0a2540;
-      box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.08);
+      box-shadow: 0 0 0 3px rgba(10,37,64,0.08);
     }
     .country-list {
       flex: 1;
@@ -75,9 +67,7 @@
       border-left: 3px solid transparent;
       gap: 12px;
     }
-    .country-item:hover {
-      background: #edf2f7;
-    }
+    .country-item:hover { background: #edf2f7; }
     .country-item.active {
       background: #e6edf5;
       border-left-color: #0a2540;
@@ -102,7 +92,7 @@
       border-radius: 20px;
     }
 
-    /* ----- Main Content ----- */
+    /* ----- Main ----- */
     .main {
       flex: 1;
       display: flex;
@@ -136,7 +126,7 @@
     .filter-bar input:focus,
     .filter-bar select:focus {
       border-color: #0a2540;
-      box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.08);
+      box-shadow: 0 0 0 3px rgba(10,37,64,0.08);
     }
     .filter-bar .clear-btn {
       padding: 6px 14px;
@@ -149,9 +139,7 @@
       transition: 0.15s;
       white-space: nowrap;
     }
-    .filter-bar .clear-btn:hover {
-      background: #e2e8f0;
-    }
+    .filter-bar .clear-btn:hover { background: #e2e8f0; }
 
     .main-header {
       padding: 12px 32px;
@@ -191,7 +179,6 @@
       padding: 24px 32px 40px;
     }
 
-    /* ----- Placeholder ----- */
     .placeholder {
       display: flex;
       flex-direction: column;
@@ -211,7 +198,7 @@
       color: #94a3b8;
     }
 
-    /* ----- Accordion (grouped by Correspondent) ----- */
+    /* ----- Accordion ----- */
     .product-group {
       margin-bottom: 24px;
       border: 1px solid #eaedf2;
@@ -232,9 +219,7 @@
       color: #0a2540;
       border-bottom: 1px solid transparent;
     }
-    .product-group-header:hover {
-      background: #f1f5f9;
-    }
+    .product-group-header:hover { background: #f1f5f9; }
     .product-group-header .title {
       display: flex;
       align-items: center;
@@ -259,19 +244,15 @@
       font-size: 1.2rem;
       transition: transform 0.25s;
     }
-    .product-group-header .arrow.open {
-      transform: rotate(180deg);
-    }
+    .product-group-header .arrow.open { transform: rotate(180deg); }
     .product-group-body {
       padding: 0 24px 24px;
       display: none;
       background: white;
     }
-    .product-group-body.open {
-      display: block;
-    }
+    .product-group-body.open { display: block; }
 
-    /* ----- Product details table ----- */
+    /* ----- Product rows ----- */
     .product-row {
       margin-top: 20px;
       border: 1px solid #edf2f7;
@@ -279,9 +260,7 @@
       padding: 16px 20px;
       background: #fafcff;
     }
-    .product-row:first-of-type {
-      margin-top: 16px;
-    }
+    .product-row:first-of-type { margin-top: 16px; }
     .product-row-title {
       font-weight: 600;
       color: #0a2540;
@@ -346,66 +325,26 @@
       color: #3730a3;
     }
 
-    /* ----- Responsive ----- */
+    /* Responsive */
     @media (max-width: 768px) {
-      .app {
-        flex-direction: column;
-        height: auto;
-        overflow: auto;
-      }
-      .sidebar {
-        width: 100%;
-        height: auto;
-        max-height: 300px;
-        border-right: none;
-        border-bottom: 1px solid #eaedf2;
-      }
-      .main {
-        height: auto;
-      }
-      .filter-bar {
-        padding: 12px 16px;
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .filter-bar input,
-      .filter-bar select {
-        min-width: unset;
-      }
-      .main-header {
-        padding: 12px 16px;
-      }
-      .main-body {
-        padding: 16px 16px 40px;
-      }
-      .detail-grid {
-        grid-template-columns: 1fr;
-      }
-      .detail-item .label {
-        min-width: 100px;
-      }
+      .app { flex-direction: column; height: auto; overflow: auto; }
+      .sidebar { width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #eaedf2; }
+      .main { height: auto; }
+      .filter-bar { padding: 12px 16px; flex-direction: column; align-items: stretch; }
+      .filter-bar input, .filter-bar select { min-width: unset; }
+      .main-header { padding: 12px 16px; }
+      .main-body { padding: 16px 16px 40px; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-item .label { min-width: 100px; }
     }
     @media (max-width: 480px) {
-      .sidebar-header h2 {
-        font-size: 1rem;
-      }
-      .country-item {
-        padding: 8px 12px;
-      }
-      .main-header h1 {
-        font-size: 1.3rem;
-      }
+      .sidebar-header h2 { font-size: 1rem; }
+      .country-item { padding: 8px 12px; }
+      .main-header h1 { font-size: 1.3rem; }
     }
 
-    .loading,
-    .error {
-      padding: 40px;
-      text-align: center;
-      color: #475569;
-    }
-    .error {
-      color: #b91c1c;
-    }
+    .loading, .error { padding: 40px; text-align: center; color: #475569; }
+    .error { color: #b91c1c; }
     .error code {
       background: #f1f5f9;
       padding: 4px 12px;
@@ -417,447 +356,384 @@
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h2>🌍 Countries</h2>
-        <input type="text" id="countrySearch" placeholder="Search country..." />
-      </div>
-      <div class="country-list" id="countryList"></div>
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🌍 Countries</h2>
+      <input type="text" id="countrySearch" placeholder="Search country..." />
+    </div>
+    <div class="country-list" id="countryList"></div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
+      <select id="filterProductType"><option value="">Product Type</option></select>
+      <select id="filterCorrespondent"><option value="">Correspondent</option></select>
+      <select id="filterCurrency"><option value="">Currency</option></select>
+      <button class="clear-btn" id="clearFilters">✕ Clear</button>
     </div>
 
-    <!-- Main -->
-    <div class="main">
-      <!-- Filter Bar -->
-      <div class="filter-bar" id="filterBar">
-        <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
-        <select id="filterProductType"><option value="">Product Type</option></select>
-        <select id="filterCorrespondent"><option value="">Correspondent</option></select>
-        <select id="filterCurrency"><option value="">Currency</option></select>
-        <button class="clear-btn" id="clearFilters">✕ Clear</button>
-      </div>
+    <!-- Header -->
+    <div class="main-header">
+      <h1>
+        <span class="flag" id="countryFlagEmoji">🌍</span>
+        <span id="countryNameDisplay">Select a country</span>
+      </h1>
+      <div class="stats" id="statsDisplay">0 products</div>
+    </div>
 
-      <!-- Header -->
-      <div class="main-header" id="mainHeader">
-        <h1>
-          <span class="flag" id="countryFlagEmoji">🌍</span>
-          <span id="countryNameDisplay">Select a country</span>
-        </h1>
-        <div class="stats" id="statsDisplay">0 products</div>
-      </div>
-
-      <!-- Body -->
-      <div class="main-body" id="mainBody">
-        <div class="placeholder">
-          <h3>Pick a country from the left</h3>
-          <p>See all product details for that country.</p>
-        </div>
+    <!-- Body -->
+    <div class="main-body" id="mainBody">
+      <div class="placeholder">
+        <h3>Pick a country from the left</h3>
+        <p>See all product details for that country.</p>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    // =============================================================
-    //  CONFIG
-    // =============================================================
-    const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
+<script>
+  // =============================================================
+  //  CONFIG
+  // =============================================================
+  const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
 
-    // =============================================================
-    //  COUNTRY -> FLAG EMOJI MAP
-    // =============================================================
-    const countryFlagEmoji = {
-      "Afghanistan": "🇦🇫",
-      "Albania": "🇦🇱",
-      "Algeria": "🇩🇿",
-      "Armenia": "🇦🇲",
-      "Australia": "🇦🇺",
-      "Azerbaijan": "🇦🇿",
-      "Bahrain": "🇧🇭",
-      "Bangladesh": "🇧🇩",
-      "Benin": "🇧🇯",
-      "Bhutan": "🇧🇹",
-      "Bosnia & Herzegovina": "🇧🇦",
-      "Botswana": "🇧🇼",
-      "Burkina Faso": "🇧🇫",
-      "Cambodia": "🇰🇭",
-      "Cameroon": "🇨🇲",
-      "Canada": "🇨🇦",
-      "China": "🇨🇳",
-      "Cote D'ivoire": "🇨🇮",
-      "Czech Republic": "🇨🇿",
-      "Denmark": "🇩🇰",
-      "Egypt": "🇪🇬",
-      "Ethiopia": "🇪🇹",
-      "Europe": "🇪🇺",
-      "Gambia": "🇬🇲",
-      "Georgia": "🇬🇪",
-      "Ghana": "🇬🇭",
-      "Guinea": "🇬🇳",
-      "Hong Kong": "🇭🇰",
-      "Hungary": "🇭🇺",
-      "India": "🇮🇳",
-      "Indonesia": "🇮🇩",
-      "Japan": "🇯🇵",
-      "Jordan": "🇯🇴",
-      "Kazakhstan": "🇰🇿",
-      "Kenya": "🇰🇪",
-      "Kyrgyzstan": "🇰🇬",
-      "Lebanon": "🇱🇧",
-      "Liechtenstein": "🇱🇮",
-      "Madagascar": "🇲🇬",
-      "Malawi": "🇲🇼",
-      "Malaysia": "🇲🇾",
-      "Mali": "🇲🇱",
-      "Mongolia": "🇲🇳",
-      "Morocco": "🇲🇦",
-      "Nepal": "🇳🇵",
-      "New Zealand": "🇳🇿",
-      "Niger": "🇳🇪",
-      "Nigeria": "🇳🇬",
-      "Norway": "🇳🇴",
-      "Oman": "🇴🇲",
-      "Pakistan": "🇵🇰",
-      "Palestine": "🇵🇸",
-      "Philippines": "🇵🇭",
-      "Poland": "🇵🇱",
-      "Qatar": "🇶🇦",
-      "Romania": "🇷🇴",
-      "Rwanda": "🇷🇼",
-      "Saudi Arabia": "🇸🇦",
-      "Senegal": "🇸🇳",
-      "Sierra Leone": "🇸🇱",
-      "Singapore": "🇸🇬",
-      "South Africa": "🇿🇦",
-      "South Korea": "🇰🇷",
-      "South Sudan": "🇸🇸",
-      "Sri Lanka": "🇱🇰",
-      "Sweden": "🇸🇪",
-      "Switzerland": "🇨🇭",
-      "Syria": "🇸🇾",
-      "Tajikistan": "🇹🇯",
-      "Tanzania": "🇹🇿",
-      "Thailand": "🇹🇭",
-      "Togo": "🇹🇬",
-      "Tunisia": "🇹🇳",
-      "Turkey": "🇹🇷",
-      "Turkmenistan": "🇹🇲",
-      "Uganda": "🇺🇬",
-      "United Arab Emirates": "🇦🇪",
-      "United Kingdom": "🇬🇧",
-      "United States Of America": "🇺🇸",
-      "Uzbekistan": "🇺🇿",
-      "Vietnam": "🇻🇳"
-    };
+  // =============================================================
+  //  COUNTRY -> FLAG EMOJI MAP
+  // =============================================================
+  const countryFlagEmoji = {
+    "Afghanistan": "🇦🇫", "Albania": "🇦🇱", "Algeria": "🇩🇿", "Armenia": "🇦🇲",
+    "Australia": "🇦🇺", "Azerbaijan": "🇦🇿", "Bahrain": "🇧🇭", "Bangladesh": "🇧🇩",
+    "Benin": "🇧🇯", "Bhutan": "🇧🇹", "Bosnia & Herzegovina": "🇧🇦", "Botswana": "🇧🇼",
+    "Burkina Faso": "🇧🇫", "Cambodia": "🇰🇭", "Cameroon": "🇨🇲", "Canada": "🇨🇦",
+    "China": "🇨🇳", "Cote D'ivoire": "🇨🇮", "Czech Republic": "🇨🇿", "Denmark": "🇩🇰",
+    "Egypt": "🇪🇬", "Ethiopia": "🇪🇹", "Europe": "🇪🇺", "Gambia": "🇬🇲",
+    "Georgia": "🇬🇪", "Ghana": "🇬🇭", "Guinea": "🇬🇳", "Hong Kong": "🇭🇰",
+    "Hungary": "🇭🇺", "India": "🇮🇳", "Indonesia": "🇮🇩", "Japan": "🇯🇵",
+    "Jordan": "🇯🇴", "Kazakhstan": "🇰🇿", "Kenya": "🇰🇪", "Kyrgyzstan": "🇰🇬",
+    "Lebanon": "🇱🇧", "Liechtenstein": "🇱🇮", "Madagascar": "🇲🇬", "Malawi": "🇲🇼",
+    "Malaysia": "🇲🇾", "Mali": "🇲🇱", "Mongolia": "🇲🇳", "Morocco": "🇲🇦",
+    "Nepal": "🇳🇵", "New Zealand": "🇳🇿", "Niger": "🇳🇪", "Nigeria": "🇳🇬",
+    "Norway": "🇳🇴", "Oman": "🇴🇲", "Pakistan": "🇵🇰", "Palestine": "🇵🇸",
+    "Philippines": "🇵🇭", "Poland": "🇵🇱", "Qatar": "🇶🇦", "Romania": "🇷🇴",
+    "Rwanda": "🇷🇼", "Saudi Arabia": "🇸🇦", "Senegal": "🇸🇳", "Sierra Leone": "🇸🇱",
+    "Singapore": "🇸🇬", "South Africa": "🇿🇦", "South Korea": "🇰🇷", "South Sudan": "🇸🇸",
+    "Sri Lanka": "🇱🇰", "Sweden": "🇸🇪", "Switzerland": "🇨🇭", "Syria": "🇸🇾",
+    "Tajikistan": "🇹🇯", "Tanzania": "🇹🇿", "Thailand": "🇹🇭", "Togo": "🇹🇬",
+    "Tunisia": "🇹🇳", "Turkey": "🇹🇷", "Turkmenistan": "🇹🇲", "Uganda": "🇺🇬",
+    "United Arab Emirates": "🇦🇪", "United Kingdom": "🇬🇧", "United States Of America": "🇺🇸",
+    "Uzbekistan": "🇺🇿", "Vietnam": "🇻🇳"
+  };
+  function getFlag(country) { return countryFlagEmoji[country] || '🌍'; }
 
-    function getFlag(country) {
-      return countryFlagEmoji[country] || '🌍';
+  // =============================================================
+  //  STATE
+  // =============================================================
+  let allData = [];
+  let headers = [];
+  let countries = [];
+  let countryDataMap = {};
+  let currentCountry = null;
+
+  // DOM refs
+  const countryListEl = document.getElementById('countryList');
+  const countrySearch = document.getElementById('countrySearch');
+  const mainBody = document.getElementById('mainBody');
+  const countryNameDisplay = document.getElementById('countryNameDisplay');
+  const countryFlagEmojiEl = document.getElementById('countryFlagEmoji');
+  const statsDisplay = document.getElementById('statsDisplay');
+  const globalSearch = document.getElementById('globalSearch');
+  const filterProductType = document.getElementById('filterProductType');
+  const filterCorrespondent = document.getElementById('filterCorrespondent');
+  const filterCurrency = document.getElementById('filterCurrency');
+  const clearFiltersBtn = document.getElementById('clearFilters');
+
+  // =============================================================
+  //  HELPERS
+  // =============================================================
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  function isActive(value) {
+    const v = (value || '').toString().toLowerCase();
+    return v.includes('yes') || v.includes('active');
+  }
+  function badgeHtml(value) {
+    const active = isActive(value);
+    return `<span class="badge ${active ? '' : 'inactive'}">${escapeHtml(value)}</span>`;
+  }
+  function interfaceBadge(value) {
+    if (!value) return escapeHtml(value);
+    const lv = value.toLowerCase();
+    let cls = 'badge';
+    if (lv.includes('api')) cls += ' api';
+    else if (lv.includes('sftp')) cls += ' sftp';
+    else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
+    return `<span class="${cls}">${escapeHtml(value)}</span>`;
+  }
+
+  // =============================================================
+  //  FETCH & PARSE
+  // =============================================================
+  async function loadData() {
+    try {
+      const response = await fetch(`${EXCEL_URL}?v=${Date.now()}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status} – ${response.statusText}`);
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      if (!json.length) throw new Error('No data found in the Excel file.');
+      allData = json;
+      headers = Object.keys(allData[0]);
+      // Group by country
+      const countryMap = {};
+      allData.forEach(row => {
+        const country = row['Country'] || 'Unknown';
+        if (!countryMap[country]) countryMap[country] = [];
+        countryMap[country].push(row);
+      });
+      countries = Object.keys(countryMap).sort();
+      countryDataMap = countryMap;
+      renderCountryList(countries);
+      if (countries.length > 0) selectCountry(countries[0]);
+    } catch (err) {
+      mainBody.innerHTML = `
+        <div class="error">
+          ❌ Failed to load data<br/>
+          <span style="font-size:0.9rem;">${err.message}</span><br/>
+          <code>${EXCEL_URL}</code><br/><br/>
+          Make sure your repository is <strong>public</strong> and the file exists.
+        </div>
+      `;
+      console.error(err);
     }
+  }
 
-    // =============================================================
-    //  STATE
-    // =============================================================
-    let allData = [];
-    let headers = [];
-    let countries = [];
-    let countryDataMap = {};
-    let currentCountry = null;
-
-    // Filter state
-    let filters = {
-      search: '',
-      productType: '',
-      correspondent: '',
-      currency: ''
-    };
-
-    // DOM refs
-    const countryListEl = document.getElementById('countryList');
-    const countrySearch = document.getElementById('countrySearch');
-    const mainBody = document.getElementById('mainBody');
-    const countryNameDisplay = document.getElementById('countryNameDisplay');
-    const countryFlagEmojiEl = document.getElementById('countryFlagEmoji');
-    const statsDisplay = document.getElementById('statsDisplay');
-    const globalSearch = document.getElementById('globalSearch');
-    const filterProductType = document.getElementById('filterProductType');
-    const filterCorrespondent = document.getElementById('filterCorrespondent');
-    const filterCurrency = document.getElementById('filterCurrency');
-    const clearFiltersBtn = document.getElementById('clearFilters');
-
-    // =============================================================
-    //  HELPERS
-    // =============================================================
-    function escapeHtml(text) {
-      if (!text) return '';
+  // =============================================================
+  //  RENDER SIDEBAR
+  // =============================================================
+  function renderCountryList(countryArray) {
+    countryListEl.innerHTML = '';
+    countryArray.forEach(country => {
+      const count = countryDataMap[country] ? countryDataMap[country].length : 0;
       const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+      div.className = 'country-item';
+      div.dataset.country = country;
+      div.innerHTML = `
+        <span class="flag">${getFlag(country)}</span>
+        <span class="name">${escapeHtml(country)}</span>
+        <span class="count">${count}</span>
+      `;
+      div.addEventListener('click', () => selectCountry(country));
+      countryListEl.appendChild(div);
+    });
+  }
 
-    function isActive(value) {
-      const v = (value || '').toString().toLowerCase();
-      return v.includes('yes') || v.includes('active');
-    }
+  // =============================================================
+  //  POPULATE FILTERS FOR A SPECIFIC COUNTRY
+  // =============================================================
+  function populateFilterOptionsForCountry(country) {
+    const rows = countryDataMap[country] || [];
+    // Get unique values from this country's rows
+    const productTypes = [...new Set(rows.map(r => r['Product Type']).filter(Boolean))].sort();
+    const correspondents = [...new Set(rows.map(r => r['Correspondent']).filter(Boolean))].sort();
+    const currencies = [...new Set(rows.map(r => r['Currency']).filter(Boolean))].sort();
 
-    function badgeHtml(value) {
-      const active = isActive(value);
-      return `<span class="badge ${active ? '' : 'inactive'}">${escapeHtml(value)}</span>`;
-    }
+    // Keep current selected values if they still exist, else reset to empty
+    const currentProduct = filterProductType.value;
+    const currentCorr = filterCorrespondent.value;
+    const currentCurr = filterCurrency.value;
 
-    function interfaceBadge(value) {
-      if (!value) return escapeHtml(value);
-      const lv = value.toLowerCase();
-      let cls = 'badge';
-      if (lv.includes('api')) cls += ' api';
-      else if (lv.includes('sftp')) cls += ' sftp';
-      else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
-      return `<span class="${cls}">${escapeHtml(value)}</span>`;
-    }
+    filterProductType.innerHTML = '<option value="">Product Type</option>' +
+      productTypes.map(pt => `<option value="${escapeHtml(pt)}">${escapeHtml(pt)}</option>`).join('');
+    filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' +
+      correspondents.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    filterCurrency.innerHTML = '<option value="">Currency</option>' +
+      currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 
-    // =============================================================
-    //  FETCH & PARSE
-    // =============================================================
-    async function loadData() {
-      try {
-        const response = await fetch(`${EXCEL_URL}?v=${Date.now()}`);
-        if (!response.ok) throw new Error(`HTTP ${response.status} – ${response.statusText}`);
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-        if (!json.length) throw new Error('No data found in the Excel file.');
-        allData = json;
-        headers = Object.keys(allData[0]);
-        // Group by country
-        const countryMap = {};
-        allData.forEach(row => {
-          const country = row['Country'] || 'Unknown';
-          if (!countryMap[country]) countryMap[country] = [];
-          countryMap[country].push(row);
+    // Restore selections if they exist in the new lists
+    if (productTypes.includes(currentProduct)) filterProductType.value = currentProduct;
+    else filterProductType.value = '';
+    if (correspondents.includes(currentCorr)) filterCorrespondent.value = currentCorr;
+    else filterCorrespondent.value = '';
+    if (currencies.includes(currentCurr)) filterCurrency.value = currentCurr;
+    else filterCurrency.value = '';
+  }
+
+  // =============================================================
+  //  SELECT COUNTRY
+  // =============================================================
+  function selectCountry(country) {
+    currentCountry = country;
+    // Update sidebar active state
+    document.querySelectorAll('.country-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.country === country);
+    });
+    // Update header
+    countryNameDisplay.textContent = country;
+    countryFlagEmojiEl.textContent = getFlag(country);
+    // Update filters to show only this country's options
+    populateFilterOptionsForCountry(country);
+    // Apply filters (which will render the products)
+    applyFilters();
+  }
+
+  // =============================================================
+  //  APPLY FILTERS & RENDER
+  // =============================================================
+  function applyFilters() {
+    if (!currentCountry) return;
+    const rows = countryDataMap[currentCountry] || [];
+    const search = globalSearch.value.trim().toLowerCase();
+    const productType = filterProductType.value;
+    const correspondent = filterCorrespondent.value;
+    const currency = filterCurrency.value;
+
+    let filtered = rows.filter(row => {
+      if (search) {
+        const match = headers.some(h => {
+          const val = (row[h] || '').toString().toLowerCase();
+          return val.includes(search);
         });
-        countries = Object.keys(countryMap).sort();
-        countryDataMap = countryMap;
-        renderCountryList(countries);
-        populateFilterOptions();
-        if (countries.length > 0) selectCountry(countries[0]);
-      } catch (err) {
-        mainBody.innerHTML = `
-          <div class="error">
-            ❌ Failed to load data<br/>
-            <span style="font-size:0.9rem;">${err.message}</span><br/>
-            <code>${EXCEL_URL}</code><br/><br/>
-            Make sure your repository is <strong>public</strong> and the file exists.
+        if (!match) return false;
+      }
+      if (productType && row['Product Type'] !== productType) return false;
+      if (correspondent && row['Correspondent'] !== correspondent) return false;
+      if (currency && row['Currency'] !== currency) return false;
+      return true;
+    });
+
+    statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+    renderFilteredResults(filtered);
+  }
+
+  // =============================================================
+  //  RENDER FILTERED RESULTS (grouped by Correspondent)
+  // =============================================================
+  function renderFilteredResults(rows) {
+    if (rows.length === 0) {
+      mainBody.innerHTML = `<div class="placeholder"><h3>No products match your filters</h3><p>Try adjusting the filters above.</p></div>`;
+      return;
+    }
+
+    const groups = {};
+    rows.forEach(row => {
+      const key = row['Correspondent'] || 'Uncategorized';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(row);
+    });
+
+    let html = '';
+    const groupNames = Object.keys(groups).sort();
+    groupNames.forEach(groupName => {
+      const items = groups[groupName];
+      const currencies = [...new Set(items.map(r => r['Currency']).filter(Boolean))].join(', ');
+
+      html += `
+        <div class="product-group">
+          <div class="product-group-header" onclick="toggleAccordion(this)">
+            <div class="title">
+              <span>${escapeHtml(groupName)}</span>
+              <span class="badge">${items.length} product${items.length>1?'s':''}</span>
+              ${currencies ? `<span class="currencies">${escapeHtml(currencies)}</span>` : ''}
+            </div>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="product-group-body open">
+      `;
+
+      items.forEach(row => {
+        let detailHtml = '<div class="detail-grid">';
+        headers.forEach(h => {
+          let val = row[h] !== undefined && row[h] !== null ? row[h] : '';
+          let displayVal = escapeHtml(val);
+          if (h.toLowerCase().includes('active') || h.toLowerCase().includes('status')) {
+            displayVal = badgeHtml(val);
+          } else if (h.toLowerCase().includes('interface')) {
+            displayVal = interfaceBadge(val);
+          }
+          detailHtml += `
+            <div class="detail-item">
+              <span class="label">${escapeHtml(h)}</span>
+              <span class="value">${displayVal}</span>
+            </div>
+          `;
+        });
+        detailHtml += '</div>';
+
+        const rowTitle = `
+          <div class="product-row-title">
+            <span class="currency-badge">${escapeHtml(row['Correspondent'] || '')}</span>
+            ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
+            ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
           </div>
         `;
-        console.error(err);
-      }
-    }
-
-    // =============================================================
-    //  RENDER SIDEBAR
-    // =============================================================
-    function renderCountryList(countryArray) {
-      countryListEl.innerHTML = '';
-      countryArray.forEach(country => {
-        const count = countryDataMap[country] ? countryDataMap[country].length : 0;
-        const div = document.createElement('div');
-        div.className = 'country-item';
-        div.dataset.country = country;
-        div.innerHTML = `
-          <span class="flag">${getFlag(country)}</span>
-          <span class="name">${escapeHtml(country)}</span>
-          <span class="count">${count}</span>
-        `;
-        div.addEventListener('click', () => selectCountry(country));
-        countryListEl.appendChild(div);
-      });
-    }
-
-    // =============================================================
-    //  POPULATE FILTER DROPDOWNS
-    // =============================================================
-    function populateFilterOptions() {
-      const productTypes = [...new Set(allData.map(r => r['Product Type']).filter(Boolean))].sort();
-      const correspondents = [...new Set(allData.map(r => r['Correspondent']).filter(Boolean))].sort();
-      const currencies = [...new Set(allData.map(r => r['Currency']).filter(Boolean))].sort();
-
-      filterProductType.innerHTML = '<option value="">Product Type</option>' + productTypes.map(pt => `<option value="${escapeHtml(pt)}">${escapeHtml(pt)}</option>`).join('');
-      filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' + correspondents.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-      filterCurrency.innerHTML = '<option value="">Currency</option>' + currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    }
-
-    // =============================================================
-    //  SELECT COUNTRY
-    // =============================================================
-    function selectCountry(country) {
-      currentCountry = country;
-      document.querySelectorAll('.country-item').forEach(el => {
-        el.classList.toggle('active', el.dataset.country === country);
-      });
-      countryNameDisplay.textContent = country;
-      countryFlagEmojiEl.textContent = getFlag(country);
-      applyFilters();
-    }
-
-    // =============================================================
-    //  APPLY FILTERS & RENDER
-    // =============================================================
-    function applyFilters() {
-      if (!currentCountry) return;
-      const rows = countryDataMap[currentCountry] || [];
-      // Collect filter values
-      const search = globalSearch.value.trim().toLowerCase();
-      const productType = filterProductType.value;
-      const correspondent = filterCorrespondent.value;
-      const currency = filterCurrency.value;
-
-      let filtered = rows.filter(row => {
-        // Search across all columns
-        if (search) {
-          const match = headers.some(h => {
-            const val = (row[h] || '').toString().toLowerCase();
-            return val.includes(search);
-          });
-          if (!match) return false;
-        }
-        // Product Type filter
-        if (productType && row['Product Type'] !== productType) return false;
-        // Correspondent filter
-        if (correspondent && row['Correspondent'] !== correspondent) return false;
-        // Currency filter
-        if (currency && row['Currency'] !== currency) return false;
-        return true;
-      });
-
-      // Update stats
-      statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
-      renderFilteredResults(filtered);
-    }
-
-    // =============================================================
-    //  RENDER FILTERED RESULTS (grouped by Correspondent)
-    // =============================================================
-    function renderFilteredResults(rows) {
-      if (rows.length === 0) {
-        mainBody.innerHTML = `<div class="placeholder"><h3>No products match your filters</h3><p>Try adjusting the filters above.</p></div>`;
-        return;
-      }
-
-      // Group by Correspondent
-      const groups = {};
-      rows.forEach(row => {
-        const key = row['Correspondent'] || 'Uncategorized';
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(row);
-      });
-
-      let html = '';
-      const groupNames = Object.keys(groups).sort();
-      groupNames.forEach(groupName => {
-        const items = groups[groupName];
-        const currencies = [...new Set(items.map(r => r['Currency']).filter(Boolean))].join(', ');
 
         html += `
-          <div class="product-group">
-            <div class="product-group-header" onclick="toggleAccordion(this)">
-              <div class="title">
-                <span>${escapeHtml(groupName)}</span>
-                <span class="badge">${items.length} product${items.length>1?'s':''}</span>
-                ${currencies ? `<span class="currencies">${escapeHtml(currencies)}</span>` : ''}
-              </div>
-              <span class="arrow">▼</span>
-            </div>
-            <div class="product-group-body open">
-        `;
-
-        items.forEach((row, idx) => {
-          let detailHtml = '<div class="detail-grid">';
-          headers.forEach(h => {
-            let val = row[h] !== undefined && row[h] !== null ? row[h] : '';
-            let displayVal = escapeHtml(val);
-            if (h.toLowerCase().includes('active') || h.toLowerCase().includes('status')) {
-              displayVal = badgeHtml(val);
-            } else if (h.toLowerCase().includes('interface')) {
-              displayVal = interfaceBadge(val);
-            }
-            detailHtml += `
-              <div class="detail-item">
-                <span class="label">${escapeHtml(h)}</span>
-                <span class="value">${displayVal}</span>
-              </div>
-            `;
-          });
-          detailHtml += '</div>';
-
-          const rowTitle = `
-            <div class="product-row-title">
-              <span class="currency-badge">${escapeHtml(row['Correspondent'] || '')}</span>
-              ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
-              ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
-            </div>
-          `;
-
-          html += `
-            <div class="product-row">
-              ${rowTitle}
-              ${detailHtml}
-            </div>
-          `;
-        });
-
-        html += `
-            </div>
+          <div class="product-row">
+            ${rowTitle}
+            ${detailHtml}
           </div>
         `;
       });
 
-      mainBody.innerHTML = html;
-    }
-
-    // =============================================================
-    //  TOGGLE ACCORDION
-    // =============================================================
-    function toggleAccordion(header) {
-      const body = header.nextElementSibling;
-      const arrow = header.querySelector('.arrow');
-      if (body) {
-        body.classList.toggle('open');
-        if (arrow) arrow.classList.toggle('open');
-      }
-    }
-
-    // =============================================================
-    //  EVENT LISTENERS
-    // =============================================================
-
-    // Country search
-    countrySearch.addEventListener('input', function() {
-      const query = this.value.toLowerCase().trim();
-      document.querySelectorAll('.country-item').forEach(item => {
-        const name = item.querySelector('.name').textContent.toLowerCase();
-        item.style.display = name.includes(query) ? 'flex' : 'none';
-      });
+      html += `
+          </div>
+        </div>
+      `;
     });
 
-    // Filter inputs
-    globalSearch.addEventListener('input', applyFilters);
-    filterProductType.addEventListener('change', applyFilters);
-    filterCorrespondent.addEventListener('change', applyFilters);
-    filterCurrency.addEventListener('change', applyFilters);
+    mainBody.innerHTML = html;
+  }
 
-    // Clear filters
-    clearFiltersBtn.addEventListener('click', function() {
-      globalSearch.value = '';
-      filterProductType.value = '';
-      filterCorrespondent.value = '';
-      filterCurrency.value = '';
-      applyFilters();
+  // =============================================================
+  //  TOGGLE ACCORDION
+  // =============================================================
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const arrow = header.querySelector('.arrow');
+    if (body) {
+      body.classList.toggle('open');
+      if (arrow) arrow.classList.toggle('open');
+    }
+  }
+
+  // =============================================================
+  //  EVENT LISTENERS
+  // =============================================================
+  countrySearch.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    document.querySelectorAll('.country-item').forEach(item => {
+      const name = item.querySelector('.name').textContent.toLowerCase();
+      item.style.display = name.includes(query) ? 'flex' : 'none';
     });
+  });
 
-    // =============================================================
-    //  INIT
-    // =============================================================
-    loadData();
-  </script>
+  globalSearch.addEventListener('input', applyFilters);
+  filterProductType.addEventListener('change', applyFilters);
+  filterCorrespondent.addEventListener('change', applyFilters);
+  filterCurrency.addEventListener('change', applyFilters);
+
+  clearFiltersBtn.addEventListener('click', function() {
+    globalSearch.value = '';
+    filterProductType.value = '';
+    filterCorrespondent.value = '';
+    filterCurrency.value = '';
+    applyFilters();
+  });
+
+  // =============================================================
+  //  INIT
+  // =============================================================
+  loadData();
+</script>
 </body>
 </html>
