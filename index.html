@@ -82,12 +82,11 @@
       background: #e6edf5;
       border-left-color: #0a2540;
     }
-    .country-item img {
-      width: 28px;
-      height: auto;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      flex-shrink: 0;
+    .country-item .flag {
+      font-size: 1.4rem;
+      line-height: 1;
+      width: 32px;
+      text-align: center;
     }
     .country-item .name {
       font-size: 0.95rem;
@@ -111,8 +110,51 @@
       overflow: hidden;
       background: white;
     }
+
+    /* ----- Filter Bar ----- */
+    .filter-bar {
+      padding: 16px 32px;
+      background: #fafcff;
+      border-bottom: 1px solid #eaedf2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .filter-bar input,
+    .filter-bar select {
+      padding: 8px 12px;
+      border: 1px solid #dce1e8;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: white;
+      outline: none;
+      transition: 0.2s;
+      min-width: 140px;
+      flex: 1 1 140px;
+    }
+    .filter-bar input:focus,
+    .filter-bar select:focus {
+      border-color: #0a2540;
+      box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.08);
+    }
+    .filter-bar .clear-btn {
+      padding: 6px 14px;
+      background: #f1f4f9;
+      border: 1px solid #dce1e8;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: #475569;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .filter-bar .clear-btn:hover {
+      background: #e2e8f0;
+    }
+
     .main-header {
-      padding: 20px 32px;
+      padding: 12px 32px;
       border-bottom: 1px solid #eaedf2;
       background: #fafcff;
       display: flex;
@@ -121,33 +163,35 @@
       flex-wrap: wrap;
     }
     .main-header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 700;
       background: linear-gradient(135deg, #0a2540, #2b5c8a);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .main-header h1 img {
-      width: 40px;
-      border-radius: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    .main-header h1 .flag {
+      font-size: 2rem;
+      -webkit-text-fill-color: initial;
     }
     .main-header .stats {
       margin-left: auto;
       font-size: 0.9rem;
       color: #475569;
       background: #f1f4f9;
-      padding: 6px 16px;
+      padding: 4px 16px;
       border-radius: 30px;
     }
+
     .main-body {
       flex: 1;
       overflow-y: auto;
       padding: 24px 32px 40px;
     }
+
+    /* ----- Placeholder ----- */
     .placeholder {
       display: flex;
       flex-direction: column;
@@ -156,12 +200,6 @@
       height: 100%;
       color: #94a3b8;
       text-align: center;
-    }
-    .placeholder svg {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 16px;
-      opacity: 0.5;
     }
     .placeholder h3 {
       font-size: 1.4rem;
@@ -233,7 +271,7 @@
       display: block;
     }
 
-    /* ----- Product details table (one per row) ----- */
+    /* ----- Product details table ----- */
     .product-row {
       margin-top: 20px;
       border: 1px solid #edf2f7;
@@ -252,9 +290,6 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-    }
-    .product-row-title .correspondent {
-      font-weight: 700;
     }
     .product-row-title .currency-badge {
       background: #e6edf5;
@@ -328,12 +363,20 @@
       .main {
         height: auto;
       }
+      .filter-bar {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-bar input,
+      .filter-bar select {
+        min-width: unset;
+      }
       .main-header {
-        padding: 16px 20px;
-        flex-wrap: wrap;
+        padding: 12px 16px;
       }
       .main-body {
-        padding: 16px 20px 40px;
+        padding: 16px 16px 40px;
       }
       .detail-grid {
         grid-template-columns: 1fr;
@@ -386,18 +429,27 @@
 
     <!-- Main -->
     <div class="main">
+      <!-- Filter Bar -->
+      <div class="filter-bar" id="filterBar">
+        <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
+        <select id="filterProductType"><option value="">Product Type</option></select>
+        <select id="filterCorrespondent"><option value="">Correspondent</option></select>
+        <select id="filterCurrency"><option value="">Currency</option></select>
+        <button class="clear-btn" id="clearFilters">✕ Clear</button>
+      </div>
+
+      <!-- Header -->
       <div class="main-header" id="mainHeader">
         <h1>
-          <span id="countryFlagEmoji">🌍</span>
+          <span class="flag" id="countryFlagEmoji">🌍</span>
           <span id="countryNameDisplay">Select a country</span>
         </h1>
         <div class="stats" id="statsDisplay">0 products</div>
       </div>
+
+      <!-- Body -->
       <div class="main-body" id="mainBody">
         <div class="placeholder">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 18 4.5H6A2.25 2.25 0 0 0 3.75 6.75v10.5A2.25 2.25 0 0 0 6 19.5h3.75m-3.75 0v-3.75M18 9.75V6.75M18 9.75h-3.75M18 9.75v3.75M15 6.75h3.75M6 9.75h3.75" />
-          </svg>
           <h3>Pick a country from the left</h3>
           <p>See all product details for that country.</p>
         </div>
@@ -407,9 +459,100 @@
 
   <script>
     // =============================================================
-    //  CONFIG – point to your Excel file on GitHub
+    //  CONFIG
     // =============================================================
     const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
+
+    // =============================================================
+    //  COUNTRY -> FLAG EMOJI MAP
+    // =============================================================
+    const countryFlagEmoji = {
+      "Afghanistan": "🇦🇫",
+      "Albania": "🇦🇱",
+      "Algeria": "🇩🇿",
+      "Armenia": "🇦🇲",
+      "Australia": "🇦🇺",
+      "Azerbaijan": "🇦🇿",
+      "Bahrain": "🇧🇭",
+      "Bangladesh": "🇧🇩",
+      "Benin": "🇧🇯",
+      "Bhutan": "🇧🇹",
+      "Bosnia & Herzegovina": "🇧🇦",
+      "Botswana": "🇧🇼",
+      "Burkina Faso": "🇧🇫",
+      "Cambodia": "🇰🇭",
+      "Cameroon": "🇨🇲",
+      "Canada": "🇨🇦",
+      "China": "🇨🇳",
+      "Cote D'ivoire": "🇨🇮",
+      "Czech Republic": "🇨🇿",
+      "Denmark": "🇩🇰",
+      "Egypt": "🇪🇬",
+      "Ethiopia": "🇪🇹",
+      "Europe": "🇪🇺",
+      "Gambia": "🇬🇲",
+      "Georgia": "🇬🇪",
+      "Ghana": "🇬🇭",
+      "Guinea": "🇬🇳",
+      "Hong Kong": "🇭🇰",
+      "Hungary": "🇭🇺",
+      "India": "🇮🇳",
+      "Indonesia": "🇮🇩",
+      "Japan": "🇯🇵",
+      "Jordan": "🇯🇴",
+      "Kazakhstan": "🇰🇿",
+      "Kenya": "🇰🇪",
+      "Kyrgyzstan": "🇰🇬",
+      "Lebanon": "🇱🇧",
+      "Liechtenstein": "🇱🇮",
+      "Madagascar": "🇲🇬",
+      "Malawi": "🇲🇼",
+      "Malaysia": "🇲🇾",
+      "Mali": "🇲🇱",
+      "Mongolia": "🇲🇳",
+      "Morocco": "🇲🇦",
+      "Nepal": "🇳🇵",
+      "New Zealand": "🇳🇿",
+      "Niger": "🇳🇪",
+      "Nigeria": "🇳🇬",
+      "Norway": "🇳🇴",
+      "Oman": "🇴🇲",
+      "Pakistan": "🇵🇰",
+      "Palestine": "🇵🇸",
+      "Philippines": "🇵🇭",
+      "Poland": "🇵🇱",
+      "Qatar": "🇶🇦",
+      "Romania": "🇷🇴",
+      "Rwanda": "🇷🇼",
+      "Saudi Arabia": "🇸🇦",
+      "Senegal": "🇸🇳",
+      "Sierra Leone": "🇸🇱",
+      "Singapore": "🇸🇬",
+      "South Africa": "🇿🇦",
+      "South Korea": "🇰🇷",
+      "South Sudan": "🇸🇸",
+      "Sri Lanka": "🇱🇰",
+      "Sweden": "🇸🇪",
+      "Switzerland": "🇨🇭",
+      "Syria": "🇸🇾",
+      "Tajikistan": "🇹🇯",
+      "Tanzania": "🇹🇿",
+      "Thailand": "🇹🇭",
+      "Togo": "🇹🇬",
+      "Tunisia": "🇹🇳",
+      "Turkey": "🇹🇷",
+      "Turkmenistan": "🇹🇲",
+      "Uganda": "🇺🇬",
+      "United Arab Emirates": "🇦🇪",
+      "United Kingdom": "🇬🇧",
+      "United States Of America": "🇺🇸",
+      "Uzbekistan": "🇺🇿",
+      "Vietnam": "🇻🇳"
+    };
+
+    function getFlag(country) {
+      return countryFlagEmoji[country] || '🌍';
+    }
 
     // =============================================================
     //  STATE
@@ -420,21 +563,30 @@
     let countryDataMap = {};
     let currentCountry = null;
 
+    // Filter state
+    let filters = {
+      search: '',
+      productType: '',
+      correspondent: '',
+      currency: ''
+    };
+
+    // DOM refs
     const countryListEl = document.getElementById('countryList');
     const countrySearch = document.getElementById('countrySearch');
     const mainBody = document.getElementById('mainBody');
     const countryNameDisplay = document.getElementById('countryNameDisplay');
-    const countryFlagEmoji = document.getElementById('countryFlagEmoji');
+    const countryFlagEmojiEl = document.getElementById('countryFlagEmoji');
     const statsDisplay = document.getElementById('statsDisplay');
+    const globalSearch = document.getElementById('globalSearch');
+    const filterProductType = document.getElementById('filterProductType');
+    const filterCorrespondent = document.getElementById('filterCorrespondent');
+    const filterCurrency = document.getElementById('filterCurrency');
+    const clearFiltersBtn = document.getElementById('clearFilters');
 
     // =============================================================
     //  HELPERS
     // =============================================================
-    function getFlagUrl(countryName) {
-      const code = countryName.toLowerCase().replace(/ /g, '-');
-      return `https://flagpedia.net/data/flags/h60/${code}.webp`;
-    }
-
     function escapeHtml(text) {
       if (!text) return '';
       const div = document.createElement('div');
@@ -463,7 +615,7 @@
     }
 
     // =============================================================
-    //  FETCH & PARSE EXCEL
+    //  FETCH & PARSE
     // =============================================================
     async function loadData() {
       try {
@@ -486,6 +638,7 @@
         countries = Object.keys(countryMap).sort();
         countryDataMap = countryMap;
         renderCountryList(countries);
+        populateFilterOptions();
         if (countries.length > 0) selectCountry(countries[0]);
       } catch (err) {
         mainBody.innerHTML = `
@@ -511,13 +664,26 @@
         div.className = 'country-item';
         div.dataset.country = country;
         div.innerHTML = `
-          <img src="${getFlagUrl(country)}" alt="${country} flag" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23eee%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 font-size=%2240%22 fill=%22%23999%22%3E🌍%3C/text%3E%3C/svg%3E'" />
+          <span class="flag">${getFlag(country)}</span>
           <span class="name">${escapeHtml(country)}</span>
           <span class="count">${count}</span>
         `;
         div.addEventListener('click', () => selectCountry(country));
         countryListEl.appendChild(div);
       });
+    }
+
+    // =============================================================
+    //  POPULATE FILTER DROPDOWNS
+    // =============================================================
+    function populateFilterOptions() {
+      const productTypes = [...new Set(allData.map(r => r['Product Type']).filter(Boolean))].sort();
+      const correspondents = [...new Set(allData.map(r => r['Correspondent']).filter(Boolean))].sort();
+      const currencies = [...new Set(allData.map(r => r['Currency']).filter(Boolean))].sort();
+
+      filterProductType.innerHTML = '<option value="">Product Type</option>' + productTypes.map(pt => `<option value="${escapeHtml(pt)}">${escapeHtml(pt)}</option>`).join('');
+      filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' + correspondents.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      filterCurrency.innerHTML = '<option value="">Currency</option>' + currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     }
 
     // =============================================================
@@ -529,26 +695,51 @@
         el.classList.toggle('active', el.dataset.country === country);
       });
       countryNameDisplay.textContent = country;
-      // Update flag in header
-      const headerImg = document.querySelector('.main-header h1 img');
-      if (headerImg) headerImg.remove();
-      const img = document.createElement('img');
-      img.src = getFlagUrl(country);
-      img.alt = country + ' flag';
-      img.onerror = () => { img.style.display = 'none'; };
-      document.querySelector('.main-header h1').prepend(img);
-      renderCountryDetails(country);
+      countryFlagEmojiEl.textContent = getFlag(country);
+      applyFilters();
     }
 
     // =============================================================
-    //  RENDER COUNTRY DETAILS – grouped by Correspondent
+    //  APPLY FILTERS & RENDER
     // =============================================================
-    function renderCountryDetails(country) {
-      const rows = countryDataMap[country] || [];
-      statsDisplay.textContent = `${rows.length} product${rows.length !== 1 ? 's' : ''}`;
+    function applyFilters() {
+      if (!currentCountry) return;
+      const rows = countryDataMap[currentCountry] || [];
+      // Collect filter values
+      const search = globalSearch.value.trim().toLowerCase();
+      const productType = filterProductType.value;
+      const correspondent = filterCorrespondent.value;
+      const currency = filterCurrency.value;
 
+      let filtered = rows.filter(row => {
+        // Search across all columns
+        if (search) {
+          const match = headers.some(h => {
+            const val = (row[h] || '').toString().toLowerCase();
+            return val.includes(search);
+          });
+          if (!match) return false;
+        }
+        // Product Type filter
+        if (productType && row['Product Type'] !== productType) return false;
+        // Correspondent filter
+        if (correspondent && row['Correspondent'] !== correspondent) return false;
+        // Currency filter
+        if (currency && row['Currency'] !== currency) return false;
+        return true;
+      });
+
+      // Update stats
+      statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+      renderFilteredResults(filtered);
+    }
+
+    // =============================================================
+    //  RENDER FILTERED RESULTS (grouped by Correspondent)
+    // =============================================================
+    function renderFilteredResults(rows) {
       if (rows.length === 0) {
-        mainBody.innerHTML = `<div class="placeholder"><h3>No products for this country</h3></div>`;
+        mainBody.innerHTML = `<div class="placeholder"><h3>No products match your filters</h3><p>Try adjusting the filters above.</p></div>`;
         return;
       }
 
@@ -564,7 +755,6 @@
       const groupNames = Object.keys(groups).sort();
       groupNames.forEach(groupName => {
         const items = groups[groupName];
-        // Collect unique currencies for the group
         const currencies = [...new Set(items.map(r => r['Currency']).filter(Boolean))].join(', ');
 
         html += `
@@ -580,14 +770,11 @@
             <div class="product-group-body open">
         `;
 
-        // For each product (row) under this correspondent
         items.forEach((row, idx) => {
-          // Build a detail grid for this row
           let detailHtml = '<div class="detail-grid">';
           headers.forEach(h => {
             let val = row[h] !== undefined && row[h] !== null ? row[h] : '';
             let displayVal = escapeHtml(val);
-            // Apply badges for specific columns
             if (h.toLowerCase().includes('active') || h.toLowerCase().includes('status')) {
               displayVal = badgeHtml(val);
             } else if (h.toLowerCase().includes('interface')) {
@@ -602,26 +789,13 @@
           });
           detailHtml += '</div>';
 
-          // If there are multiple rows, add a title row for clarity (Correspondent + Currency)
-          let rowTitle = '';
-          if (items.length > 1) {
-            rowTitle = `
-              <div class="product-row-title">
-                <span class="correspondent">${escapeHtml(row['Correspondent'] || '')}</span>
-                ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
-                ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
-              </div>
-            `;
-          } else {
-            // If only one product, we can show a simple title with correspondent and product type
-            rowTitle = `
-              <div class="product-row-title">
-                <span class="correspondent">${escapeHtml(row['Correspondent'] || '')}</span>
-                ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
-                ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
-              </div>
-            `;
-          }
+          const rowTitle = `
+            <div class="product-row-title">
+              <span class="currency-badge">${escapeHtml(row['Correspondent'] || '')}</span>
+              ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
+              ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
+            </div>
+          `;
 
           html += `
             <div class="product-row">
@@ -653,14 +827,31 @@
     }
 
     // =============================================================
-    //  SEARCH FILTER
+    //  EVENT LISTENERS
     // =============================================================
+
+    // Country search
     countrySearch.addEventListener('input', function() {
       const query = this.value.toLowerCase().trim();
       document.querySelectorAll('.country-item').forEach(item => {
         const name = item.querySelector('.name').textContent.toLowerCase();
         item.style.display = name.includes(query) ? 'flex' : 'none';
       });
+    });
+
+    // Filter inputs
+    globalSearch.addEventListener('input', applyFilters);
+    filterProductType.addEventListener('change', applyFilters);
+    filterCorrespondent.addEventListener('change', applyFilters);
+    filterCurrency.addEventListener('change', applyFilters);
+
+    // Clear filters
+    clearFiltersBtn.addEventListener('click', function() {
+      globalSearch.value = '';
+      filterProductType.value = '';
+      filterCorrespondent.value = '';
+      filterCurrency.value = '';
+      applyFilters();
     });
 
     // =============================================================
