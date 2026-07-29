@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
-    /* ----- Reset & Base ----- */
     * {
       margin: 0;
       padding: 0;
@@ -174,9 +173,9 @@
       color: #94a3b8;
     }
 
-    /* ----- Accordion (product cards) ----- */
+    /* ----- Accordion (grouped by Correspondent) ----- */
     .product-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       border: 1px solid #eaedf2;
       border-radius: 12px;
       overflow: hidden;
@@ -184,7 +183,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .product-group-header {
-      padding: 16px 20px;
+      padding: 16px 24px;
       background: #fafcff;
       cursor: pointer;
       display: flex;
@@ -226,7 +225,7 @@
       transform: rotate(180deg);
     }
     .product-group-body {
-      padding: 0 20px 20px;
+      padding: 0 24px 24px;
       display: none;
       background: white;
     }
@@ -234,12 +233,41 @@
       display: block;
     }
 
-    /* ----- Details Table inside accordion ----- */
+    /* ----- Product details table (one per row) ----- */
+    .product-row {
+      margin-top: 20px;
+      border: 1px solid #edf2f7;
+      border-radius: 8px;
+      padding: 16px 20px;
+      background: #fafcff;
+    }
+    .product-row:first-of-type {
+      margin-top: 16px;
+    }
+    .product-row-title {
+      font-weight: 600;
+      color: #0a2540;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .product-row-title .correspondent {
+      font-weight: 700;
+    }
+    .product-row-title .currency-badge {
+      background: #e6edf5;
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1e293b;
+    }
     .detail-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px 24px;
-      margin-top: 16px;
+      gap: 6px 24px;
     }
     .detail-item {
       display: flex;
@@ -250,7 +278,7 @@
     .detail-item .label {
       font-weight: 500;
       color: #64748b;
-      min-width: 130px;
+      min-width: 140px;
       flex-shrink: 0;
     }
     .detail-item .value {
@@ -269,6 +297,18 @@
     .detail-item .value .badge.inactive {
       background: #fee2e2;
       color: #991b1b;
+    }
+    .detail-item .value .badge.api {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .detail-item .value .badge.sftp {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .detail-item .value .badge.file {
+      background: #e0e7ff;
+      color: #3730a3;
     }
 
     /* ----- Responsive ----- */
@@ -314,7 +354,6 @@
       }
     }
 
-    /* ----- Loading / error states ----- */
     .loading,
     .error {
       padding: 40px;
@@ -375,13 +414,12 @@
     // =============================================================
     //  STATE
     // =============================================================
-    let allData = [];               // array of row objects
-    let headers = [];               // column names
-    let countries = [];            // array of unique country names
-    let countryDataMap = {};       // country => array of rows
+    let allData = [];
+    let headers = [];
+    let countries = [];
+    let countryDataMap = {};
     let currentCountry = null;
 
-    // DOM refs
     const countryListEl = document.getElementById('countryList');
     const countrySearch = document.getElementById('countrySearch');
     const mainBody = document.getElementById('mainBody');
@@ -393,14 +431,8 @@
     //  HELPERS
     // =============================================================
     function getFlagUrl(countryName) {
-      // Map country names to flagpedia codes (lowercase, replace spaces with -)
       const code = countryName.toLowerCase().replace(/ /g, '-');
       return `https://flagpedia.net/data/flags/h60/${code}.webp`;
-    }
-
-    function getCountryEmoji(countryName) {
-      // Simple fallback – return a globe if flag fails to load
-      return '🌍';
     }
 
     function escapeHtml(text) {
@@ -415,12 +447,19 @@
       return v.includes('yes') || v.includes('active');
     }
 
-    function badgeHtml(value, type = 'active') {
-      if (type === 'active') {
-        const active = isActive(value);
-        return `<span class="badge ${active ? '' : 'inactive'}">${escapeHtml(value)}</span>`;
-      }
-      return escapeHtml(value);
+    function badgeHtml(value) {
+      const active = isActive(value);
+      return `<span class="badge ${active ? '' : 'inactive'}">${escapeHtml(value)}</span>`;
+    }
+
+    function interfaceBadge(value) {
+      if (!value) return escapeHtml(value);
+      const lv = value.toLowerCase();
+      let cls = 'badge';
+      if (lv.includes('api')) cls += ' api';
+      else if (lv.includes('sftp')) cls += ' sftp';
+      else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
+      return `<span class="${cls}">${escapeHtml(value)}</span>`;
     }
 
     // =============================================================
@@ -446,12 +485,8 @@
         });
         countries = Object.keys(countryMap).sort();
         countryDataMap = countryMap;
-        // Populate sidebar
         renderCountryList(countries);
-        // Select first country by default
-        if (countries.length > 0) {
-          selectCountry(countries[0]);
-        }
+        if (countries.length > 0) selectCountry(countries[0]);
       } catch (err) {
         mainBody.innerHTML = `
           <div class="error">
@@ -490,28 +525,23 @@
     // =============================================================
     function selectCountry(country) {
       currentCountry = country;
-      // Update sidebar active state
       document.querySelectorAll('.country-item').forEach(el => {
         el.classList.toggle('active', el.dataset.country === country);
       });
-      // Update header
       countryNameDisplay.textContent = country;
-      countryFlagEmoji.textContent = '🌍'; // fallback, we'll try to set flag image
-      // Try to set flag emoji from flagpedia
-      const flagImg = document.querySelector('.main-header h1 img');
-      if (flagImg) flagImg.remove();
+      // Update flag in header
+      const headerImg = document.querySelector('.main-header h1 img');
+      if (headerImg) headerImg.remove();
       const img = document.createElement('img');
       img.src = getFlagUrl(country);
       img.alt = country + ' flag';
       img.onerror = () => { img.style.display = 'none'; };
       document.querySelector('.main-header h1').prepend(img);
-
-      // Render country details
       renderCountryDetails(country);
     }
 
     // =============================================================
-    //  RENDER COUNTRY DETAILS (accordion by Product Type)
+    //  RENDER COUNTRY DETAILS – grouped by Correspondent
     // =============================================================
     function renderCountryDetails(country) {
       const rows = countryDataMap[country] || [];
@@ -522,63 +552,20 @@
         return;
       }
 
-      // Group by Product Type (or fallback to "Product Type as per our System")
-      const groupKey = 'Product Type as per our System' || 'Product Type';
+      // Group by Correspondent
       const groups = {};
       rows.forEach(row => {
-        const key = row[groupKey] || 'Other';
+        const key = row['Correspondent'] || 'Uncategorized';
         if (!groups[key]) groups[key] = [];
         groups[key].push(row);
       });
 
       let html = '';
-      // Sort groups alphabetically
       const groupNames = Object.keys(groups).sort();
       groupNames.forEach(groupName => {
         const items = groups[groupName];
-        // Get unique currencies for this group
+        // Collect unique currencies for the group
         const currencies = [...new Set(items.map(r => r['Currency']).filter(Boolean))].join(', ');
-        // Build accordion body
-        let bodyHtml = '<div class="detail-grid">';
-        // We'll show all columns for the first row, but if there are multiple rows with same group, we might show a table.
-        // For simplicity, show all rows as detail items.
-        items.forEach((row, idx) => {
-          // For each row, we can display a compact table or a list of key-value pairs.
-          // We'll show a separate section per row if there are multiple.
-          if (items.length > 1) {
-            bodyHtml += `<div style="grid-column:1/-1; font-weight:600; margin-top:${idx===0?'0':'16px'}; border-top:${idx===0?'none':'1px solid #eaedf2'}; padding-top:${idx===0?'0':'12px'};">${escapeHtml(row['Correspondent'] || 'Product')} ${escapeHtml(row['Currency'] || '')}</div>`;
-          }
-          // Show all headers as detail rows
-          headers.forEach(h => {
-            const val = row[h] !== undefined && row[h] !== null ? row[h] : '';
-            let displayVal = escapeHtml(val);
-            // Special badge for Active column
-            if (h.toLowerCase().includes('active') || h.toLowerCase().includes('status')) {
-              displayVal = badgeHtml(val, 'active');
-            }
-            // For Interface column, badge
-            if (h.toLowerCase().includes('interface') && val) {
-              const lv = val.toLowerCase();
-              let cls = 'badge';
-              if (lv.includes('api')) cls += ' api';
-              else if (lv.includes('sftp')) cls += ' sftp';
-              else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
-              // We'll just add a style inline for simplicity
-              displayVal = `<span class="badge" style="background:#dbeafe;color:#1e40af;">${escapeHtml(val)}</span>`;
-            }
-            bodyHtml += `
-              <div class="detail-item">
-                <span class="label">${escapeHtml(h)}</span>
-                <span class="value">${displayVal}</span>
-              </div>
-            `;
-          });
-          // Add a separator between rows if more than one
-          if (items.length > 1 && idx < items.length - 1) {
-            bodyHtml += `<div style="grid-column:1/-1; border-bottom:1px dashed #eaedf2; margin:8px 0;"></div>`;
-          }
-        });
-        bodyHtml += '</div>';
 
         html += `
           <div class="product-group">
@@ -591,7 +578,60 @@
               <span class="arrow">▼</span>
             </div>
             <div class="product-group-body open">
-              ${bodyHtml}
+        `;
+
+        // For each product (row) under this correspondent
+        items.forEach((row, idx) => {
+          // Build a detail grid for this row
+          let detailHtml = '<div class="detail-grid">';
+          headers.forEach(h => {
+            let val = row[h] !== undefined && row[h] !== null ? row[h] : '';
+            let displayVal = escapeHtml(val);
+            // Apply badges for specific columns
+            if (h.toLowerCase().includes('active') || h.toLowerCase().includes('status')) {
+              displayVal = badgeHtml(val);
+            } else if (h.toLowerCase().includes('interface')) {
+              displayVal = interfaceBadge(val);
+            }
+            detailHtml += `
+              <div class="detail-item">
+                <span class="label">${escapeHtml(h)}</span>
+                <span class="value">${displayVal}</span>
+              </div>
+            `;
+          });
+          detailHtml += '</div>';
+
+          // If there are multiple rows, add a title row for clarity (Correspondent + Currency)
+          let rowTitle = '';
+          if (items.length > 1) {
+            rowTitle = `
+              <div class="product-row-title">
+                <span class="correspondent">${escapeHtml(row['Correspondent'] || '')}</span>
+                ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
+                ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
+              </div>
+            `;
+          } else {
+            // If only one product, we can show a simple title with correspondent and product type
+            rowTitle = `
+              <div class="product-row-title">
+                <span class="correspondent">${escapeHtml(row['Correspondent'] || '')}</span>
+                ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
+                ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="product-row">
+              ${rowTitle}
+              ${detailHtml}
+            </div>
+          `;
+        });
+
+        html += `
             </div>
           </div>
         `;
@@ -617,8 +657,7 @@
     // =============================================================
     countrySearch.addEventListener('input', function() {
       const query = this.value.toLowerCase().trim();
-      const items = countryListEl.querySelectorAll('.country-item');
-      items.forEach(item => {
+      document.querySelectorAll('.country-item').forEach(item => {
         const name = item.querySelector('.name').textContent.toLowerCase();
         item.style.display = name.includes(query) ? 'flex' : 'none';
       });
