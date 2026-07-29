@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Product Playbook</title>
+  <title>AMIEC Product Playbook</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f6f9fc;
       padding: 24px;
       color: #1a202c;
@@ -23,6 +23,7 @@
       border-radius: 20px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.06);
       border: 1px solid #eaedf2;
+      overflow: hidden;
     }
     .header {
       padding: 24px 32px;
@@ -217,7 +218,7 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>📘 Product Playbook <small>Global Remittance & Payments</small></h1>
+    <h1>📘 AMIEC Product Playbook <small>Global Remittance & Payments</small></h1>
     <div class="stats">
       <div class="stat-badge">📋 <span id="totalRecords">0</span> services</div>
       <div class="last-updated" id="lastUpdated">⏳ Loading…</div>
@@ -241,14 +242,15 @@
 
 <script>
   // =============================================================
-  //  ⚠️  EDIT THIS LINE – replace YOUR_USERNAME with your actual GitHub username
-  //  Example: if your username is "john", it should be:
-  //  const BASE_URL = 'https://raw.githubusercontent.com/john/product-portfolio/main/data.xlsx';
+  //  ✅  YOUR CORRECT URL – already pre-filled for you
+  //  Repository: AMIEC-Products
+  //  Username: mohamedsaaiif9924
+  //  File: data.xlsx
   // =============================================================
-  const BASE_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/product-portfolio/main/data.xlsx';
+  const BASE_URL = 'https://raw.githubusercontent.com/mohamedsaaiif9924/AMIEC-Products/main/data.xlsx';
 
   // =============================================================
-  //  APP
+  //  APP LOGIC (no changes needed below)
   // =============================================================
   let fullData = [];
   let headers = [];
