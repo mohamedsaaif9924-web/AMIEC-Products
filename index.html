@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* UPDATED TO OFFICIAL AL MULLA GREEN */
       --primary-green: #00ad41; 
       --dark-green: #008a34;
       --light-green-bg: #f0fdf4;
@@ -118,7 +117,7 @@
       background: white;
     }
 
-    /* ----- Top Navigation (UPDATED WITH LOGO) ----- */
+    /* ----- Top Navigation ----- */
     .playbook-nav {
       display: flex;
       align-items: center;
@@ -149,7 +148,7 @@
       font-family: 'Inter', sans-serif;
     }
 
-    /* ----- Nium Style Hero Banner ----- */
+    /* ----- Hero Banner ----- */
     .playbook-hero {
       background: var(--dark-blue);
       padding: 40px 32px;
@@ -169,7 +168,7 @@
       font-weight: 400;
     }
 
-    /* ----- Al Mulla Theme Filter Bar (Dependent Dropdowns) ----- */
+    /* ----- Filter Bar ----- */
     .filter-bar {
       padding: 16px 32px;
       background: #fafcff;
@@ -199,9 +198,8 @@
       box-shadow: 0 0 0 3px rgba(0, 173, 65, 0.15);
     }
     .filter-bar select:disabled {
-      background: #f1f5f9;
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
     }
     .filter-bar .clear-btn {
       padding: 8px 20px;
@@ -457,10 +455,9 @@
   <!-- Main -->
   <div class="main">
     
-    <!-- 1. UPDATED: Al Mulla Logo + AMIEC Playbook Title -->
+    <!-- 1. Al Mulla Logo + AMIEC Playbook Title -->
     <div class="playbook-nav">
       <div class="al-mulla-logo-wrap">
-        <!-- Exact logo extracted from Al Mulla Exchange website -->
         <img src="https://boot-site.pages.dev/1569cf609ad640770c77.svg" alt="Al Mulla Exchange" loading="lazy" />
         <div class="divider"></div>
         <span class="nav-title">AMIEC Playbook</span>
@@ -473,10 +470,10 @@
       <p>Our guide to sending money using the AMIEC network.</p>
     </div>
 
-    <!-- 3. Al Mulla Theme Dynamic Filter Bar -->
+    <!-- 3. Dynamic Multi-Filter Bar -->
     <div class="filter-bar">
       <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
-      <select id="filterProductType"><option value="">Product Type</option></select>
+      <select id="filterProduct"><option value="">Product</option></select>
       <select id="filterCorrespondent"><option value="">Correspondent</option></select>
       <select id="filterCurrency"><option value="">Currency</option></select>
       <button class="clear-btn" id="clearFilters">✕ Clear</button>
@@ -504,8 +501,9 @@
 
 <script>
   // =============================================================
-  //  CONFIG
+  //  CONFIG (URL to your Excel file)
   // =============================================================
+  // When you upload a new file to GitHub, browsers will automatically grab the newest version
   const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
 
   const countryFlagEmoji = {
@@ -548,9 +546,9 @@
   let countries = [];
   let countryDataMap = {};
   let currentCountry = null;
-  let isUpdatingDropdowns = false; // Prevents infinite loops
 
-  let productTypeKey = 'Product Type';
+  // These variables will automatically update based on what is found in the Excel file
+  let productKey = 'Product';
   let correspondentKey = 'Correspondent';
   let currencyKey = 'Currency';
 
@@ -563,7 +561,7 @@
     headerFlagText: document.getElementById('headerFlagText'),
     statsDisplay: document.getElementById('statsDisplay'),
     globalSearch: document.getElementById('globalSearch'),
-    filterProductType: document.getElementById('filterProductType'),
+    filterProduct: document.getElementById('filterProduct'),
     filterCorrespondent: document.getElementById('filterCorrespondent'),
     filterCurrency: document.getElementById('filterCurrency'),
     clearFiltersBtn: document.getElementById('clearFilters')
@@ -615,10 +613,11 @@
   };
 
   // =============================================================
-  //  FETCH & MAP COLUMN NAMES
+  //  FETCH & AUTO-MAP COLUMN NAMES
   // =============================================================
   async function loadData() {
     try {
+      // The ?v=${Date.now()} forces the browser to grab a fresh copy every time you refresh
       const response = await fetch(`${EXCEL_URL}?v=${Date.now()}`);
       if (!response.ok) throw new Error(`HTTP ${response.status} – ${response.statusText}`);
       const arrayBuffer = await response.arrayBuffer();
@@ -630,7 +629,7 @@
       allData = json;
       headers = Object.keys(allData[0]);
 
-      // Auto-detect columns (spaces, underscores, or lowercase variants)
+      // Automatically detect column names (supports spaces, underscores, lowercase)
       const findHeader = (possibleNames) => {
         for (let name of possibleNames) {
           const found = headers.find(h => h.toLowerCase().replace(/\s/g, '') === name.toLowerCase().replace(/\s/g, ''));
@@ -638,9 +637,11 @@
         }
         return possibleNames[0];
       };
-      productTypeKey = findHeader(['Product Type', 'Product_Type', 'producttype', 'ProductType']);
-      correspondentKey = findHeader(['Correspondent', 'correspondent', 'Correspondent']);
-      currencyKey = findHeader(['Currency', 'currency', 'Currency']);
+      
+      // Even if you rename your Excel column to "Product", "Product Type", or "product", this will find it.
+      productKey = findHeader(['Product', 'Product Type', 'Product_Type', 'producttype']);
+      correspondentKey = findHeader(['Correspondent', 'correspondent']);
+      currencyKey = findHeader(['Currency', 'currency']);
 
       // Group by country
       const countryMap = {};
@@ -691,19 +692,15 @@
   }
 
   // =============================================================
-  //  CASCADING DEPENDENT DROPDOWN LOGIC
+  //  MULTI-FILTER DROPDOWN LOGIC
   // =============================================================
   function updateDropdownsForCountry(country) {
-    if (isUpdatingDropdowns) return;
-    isUpdatingDropdowns = true;
-
     const allRows = countryDataMap[country] || [];
     const search = dom.globalSearch.value.trim().toLowerCase();
-    const currentType = dom.filterProductType.value;
+    const currentProd = dom.filterProduct.value;
     const currentCorr = dom.filterCorrespondent.value;
     const currentCurr = dom.filterCurrency.value;
 
-    // Helper to filter rows by search term
     const applySearch = (rowsToFilter) => {
       if (!search) return rowsToFilter;
       return rowsToFilter.filter(row => {
@@ -714,31 +711,27 @@
       });
     };
 
-    // 1. Build Product Type options (Filtered by current Corr, Curr, and Search)
-    let typeRows = applySearch(allRows);
-    if (currentCorr) typeRows = typeRows.filter(r => r[correspondentKey] === currentCorr);
-    if (currentCurr) typeRows = typeRows.filter(r => r[currencyKey] === currentCurr);
-    const productTypes = [...new Set(typeRows.map(r => r[productTypeKey]).filter(Boolean))].sort();
+    // Determine valid options based on CURRENT selections
+    let prodRows = applySearch(allRows);
+    if (currentCorr) prodRows = prodRows.filter(r => r[correspondentKey] === currentCorr);
+    if (currentCurr) prodRows = prodRows.filter(r => r[currencyKey] === currentCurr);
+    const products = [...new Set(prodRows.map(r => r[productKey]).filter(Boolean))].sort();
 
-    // 2. Build Correspondent options (Filtered by current Type, Curr, and Search)
     let corrRows = applySearch(allRows);
-    if (currentType) corrRows = corrRows.filter(r => r[productTypeKey] === currentType);
+    if (currentProd) corrRows = corrRows.filter(r => r[productKey] === currentProd);
     if (currentCurr) corrRows = corrRows.filter(r => r[currencyKey] === currentCurr);
     const correspondents = [...new Set(corrRows.map(r => r[correspondentKey]).filter(Boolean))].sort();
 
-    // 3. Build Currency options (Filtered by current Type, Corr, and Search)
     let currRows = applySearch(allRows);
-    if (currentType) currRows = currRows.filter(r => r[productTypeKey] === currentType);
+    if (currentProd) currRows = currRows.filter(r => r[productKey] === currentProd);
     if (currentCorr) currRows = currRows.filter(r => r[correspondentKey] === currentCorr);
     const currencies = [...new Set(currRows.map(r => r[currencyKey]).filter(Boolean))].sort();
 
-    // Helper to safely set new option lists without firing extra events
+    // Set options. Disabled removed so dropdowns are never grey.
     const setSelectOptions = (select, items, placeholder) => {
       const prevVal = select.value;
       select.innerHTML = `<option value="">${placeholder}</option>` +
         items.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
-      select.disabled = items.length === 0;
-      // Restore value only if it still exists in the new filtered list, otherwise clear it
       if (items.includes(prevVal)) {
         select.value = prevVal;
       } else {
@@ -746,11 +739,9 @@
       }
     };
 
-    setSelectOptions(dom.filterProductType, productTypes, 'Product Type');
+    setSelectOptions(dom.filterProduct, products, 'Product');
     setSelectOptions(dom.filterCorrespondent, correspondents, 'Correspondent');
     setSelectOptions(dom.filterCurrency, currencies, 'Currency');
-
-    isUpdatingDropdowns = false;
   }
 
   // =============================================================
@@ -767,13 +758,13 @@
   }
 
   // =============================================================
-  //  APPLY FILTERS & RENDER
+  //  APPLY FILTERS & RENDER RESULTS
   // =============================================================
   function applyFilters() {
     if (!currentCountry) return;
     const rows = countryDataMap[currentCountry] || [];
     const search = dom.globalSearch.value.trim().toLowerCase();
-    const productType = dom.filterProductType.value;
+    const product = dom.filterProduct.value;
     const correspondent = dom.filterCorrespondent.value;
     const currency = dom.filterCurrency.value;
 
@@ -785,7 +776,7 @@
         });
         if (!match) return false;
       }
-      if (productType && row[productTypeKey] !== productType) return false;
+      if (product && row[productKey] !== product) return false;
       if (correspondent && row[correspondentKey] !== correspondent) return false;
       if (currency && row[currencyKey] !== currency) return false;
       return true;
@@ -793,8 +784,6 @@
 
     dom.statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
     renderFilteredResults(filtered);
-
-    // Update the dropdown options based on the current active filters
     updateDropdownsForCountry(currentCountry);
   }
 
@@ -856,7 +845,7 @@
           <div class="product-row-title">
             <span class="currency-badge">${escapeHtml(row[correspondentKey] || '')}</span>
             ${row[currencyKey] ? `<span class="currency-badge">${escapeHtml(row[currencyKey])}</span>` : ''}
-            ${row[productTypeKey] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row[productTypeKey])}</span>` : ''}
+            ${row[productKey] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row[productKey])}</span>` : ''}
           </div>
         `;
 
@@ -900,16 +889,14 @@
     });
   });
 
-  // All filter changes simply call applyFilters().
-  // The dropdowns automatically update in applyFilters() via updateDropdownsForCountry()
   dom.globalSearch.addEventListener('input', applyFilters);
-  dom.filterProductType.addEventListener('change', applyFilters);
+  dom.filterProduct.addEventListener('change', applyFilters);
   dom.filterCorrespondent.addEventListener('change', applyFilters);
   dom.filterCurrency.addEventListener('change', applyFilters);
 
   dom.clearFiltersBtn.addEventListener('click', function() {
     dom.globalSearch.value = '';
-    dom.filterProductType.value = '';
+    dom.filterProduct.value = '';
     dom.filterCorrespondent.value = '';
     dom.filterCurrency.value = '';
     applyFilters();
