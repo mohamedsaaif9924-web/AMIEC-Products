@@ -117,7 +117,7 @@
       background: white;
     }
 
-    /* ----- Nium Style Top Navigation (Links & Toggle Removed) ----- */
+    /* ----- Nium Style Top Navigation ----- */
     .playbook-nav {
       display: flex;
       justify-content: space-between;
@@ -160,7 +160,7 @@
       font-weight: 400;
     }
 
-    /* ----- Al Mulla Theme Filter Bar ----- */
+    /* ----- Al Mulla Theme Filter Bar (Dependent Dropdowns) ----- */
     .filter-bar {
       padding: 16px 32px;
       background: #fafcff;
@@ -212,7 +212,7 @@
       box-shadow: 0 4px 8px rgba(0, 209, 92, 0.4);
     }
 
-    /* ----- Country Specific Header (Only Country Name) ----- */
+    /* ----- Country Specific Header ----- */
     .main-header {
       padding: 12px 32px;
       border-bottom: 1px solid #eaedf2;
@@ -447,20 +447,20 @@
   <!-- Main -->
   <div class="main">
     
-    <!-- 1. Nium-style Navigation Bar (Links Removed) -->
+    <!-- 1. Nium-style Navigation Bar -->
     <div class="playbook-nav">
       <div class="brand">
         AMIEC <span>Playbook</span>
       </div>
     </div>
 
-    <!-- 2. Nium-style Hero Banner with Big Heading -->
+    <!-- 2. Nium-style Hero Banner -->
     <div class="playbook-hero">
       <h1>AMIEC Product Book</h1>
       <p>Our guide to sending money using the AMIEC network.</p>
     </div>
 
-    <!-- 3. Al Mulla Theme Filter Bar -->
+    <!-- 3. Al Mulla Theme Dynamic Filter Bar -->
     <div class="filter-bar">
       <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
       <select id="filterProductType"><option value="">Product Type</option></select>
@@ -469,7 +469,7 @@
       <button class="clear-btn" id="clearFilters">✕ Clear</button>
     </div>
 
-    <!-- 4. Country Header (AMIEC REMOVED from here) -->
+    <!-- 4. Country Header -->
     <div class="main-header">
       <div class="brand">
         <img id="headerFlagImg" class="flag-img" src="" alt="Flag" style="display:none;" />
@@ -535,8 +535,8 @@
   let countries = [];
   let countryDataMap = {};
   let currentCountry = null;
+  let isUpdatingDropdowns = false; // Prevents infinite loops
 
-  // Flexible Column Mapping to ensure dropdowns never break
   let productTypeKey = 'Product Type';
   let correspondentKey = 'Correspondent';
   let currencyKey = 'Currency';
@@ -602,7 +602,7 @@
   };
 
   // =============================================================
-  //  FETCH & MAP COLUMN NAMES ROBUSTLY
+  //  FETCH & MAP COLUMN NAMES
   // =============================================================
   async function loadData() {
     try {
@@ -617,19 +617,17 @@
       allData = json;
       headers = Object.keys(allData[0]);
 
-      // Auto-detect columns (spaces, underscores, or lowercase variants)
       const findHeader = (possibleNames) => {
         for (let name of possibleNames) {
           const found = headers.find(h => h.toLowerCase().replace(/\s/g, '') === name.toLowerCase().replace(/\s/g, ''));
           if (found) return found;
         }
-        return possibleNames[0]; // Fallback
+        return possibleNames[0];
       };
       productTypeKey = findHeader(['Product Type', 'Product_Type', 'producttype', 'ProductType']);
       correspondentKey = findHeader(['Correspondent', 'correspondent', 'Correspondent']);
       currencyKey = findHeader(['Currency', 'currency', 'Currency']);
 
-      // Group by country
       const countryMap = {};
       allData.forEach(row => {
         const country = row['Country'] || 'Unknown';
@@ -678,41 +676,70 @@
   }
 
   // =============================================================
-  //  POPULATE & ENABLE FILTERS FOR A SPECIFIC COUNTRY
+  //  CASCADING DEPENDENT DROPDOWN LOGIC
   // =============================================================
-  function populateFilterOptionsForCountry(country) {
-    const rows = countryDataMap[country] || [];
-    const productTypes = [...new Set(rows.map(r => r[productTypeKey]).filter(Boolean))].sort();
-    const correspondents = [...new Set(rows.map(r => r[correspondentKey]).filter(Boolean))].sort();
-    const currencies = [...new Set(rows.map(r => r[currencyKey]).filter(Boolean))].sort();
+  function updateDropdownsForCountry(country) {
+    if (isUpdatingDropdowns) return;
+    isUpdatingDropdowns = true;
 
-    const currentProduct = dom.filterProductType.value;
+    const allRows = countryDataMap[country] || [];
+    const search = dom.globalSearch.value.trim().toLowerCase();
+    const currentType = dom.filterProductType.value;
     const currentCorr = dom.filterCorrespondent.value;
     const currentCurr = dom.filterCurrency.value;
 
-    dom.filterProductType.innerHTML = '<option value="">Product Type</option>' +
-      productTypes.map(pt => `<option value="${escapeHtml(pt)}">${escapeHtml(pt)}</option>`).join('');
-    dom.filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' +
-      correspondents.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    dom.filterCurrency.innerHTML = '<option value="">Currency</option>' +
-      currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    // Helper to filter rows by search term
+    const applySearch = (rowsToFilter) => {
+      if (!search) return rowsToFilter;
+      return rowsToFilter.filter(row => {
+        return headers.some(h => {
+          const val = (row[h] || '').toString().toLowerCase();
+          return val.includes(search);
+        });
+      });
+    };
 
-    // Disable dropdown if no options exist to avoid confusion
-    dom.filterProductType.disabled = productTypes.length === 0;
-    dom.filterCorrespondent.disabled = correspondents.length === 0;
-    dom.filterCurrency.disabled = currencies.length === 0;
+    // 1. Build Product Type options (Filtered by current Corr, Curr, and Search)
+    let typeRows = applySearch(allRows);
+    if (currentCorr) typeRows = typeRows.filter(r => r[correspondentKey] === currentCorr);
+    if (currentCurr) typeRows = typeRows.filter(r => r[currencyKey] === currentCurr);
+    const productTypes = [...new Set(typeRows.map(r => r[productTypeKey]).filter(Boolean))].sort();
 
-    // Restore previous selections if they exist
-    if (productTypes.includes(currentProduct)) dom.filterProductType.value = currentProduct;
-    else dom.filterProductType.value = '';
-    if (correspondents.includes(currentCorr)) dom.filterCorrespondent.value = currentCorr;
-    else dom.filterCorrespondent.value = '';
-    if (currencies.includes(currentCurr)) dom.filterCurrency.value = currentCurr;
-    else dom.filterCurrency.value = '';
+    // 2. Build Correspondent options (Filtered by current Type, Curr, and Search)
+    let corrRows = applySearch(allRows);
+    if (currentType) corrRows = corrRows.filter(r => r[productTypeKey] === currentType);
+    if (currentCurr) corrRows = corrRows.filter(r => r[currencyKey] === currentCurr);
+    const correspondents = [...new Set(corrRows.map(r => r[correspondentKey]).filter(Boolean))].sort();
+
+    // 3. Build Currency options (Filtered by current Type, Corr, and Search)
+    let currRows = applySearch(allRows);
+    if (currentType) currRows = currRows.filter(r => r[productTypeKey] === currentType);
+    if (currentCorr) currRows = currRows.filter(r => r[correspondentKey] === currentCorr);
+    const currencies = [...new Set(currRows.map(r => r[currencyKey]).filter(Boolean))].sort();
+
+    // Helper to safely set new option lists without firing extra events
+    const setSelectOptions = (select, items, placeholder) => {
+      const prevVal = select.value;
+      select.innerHTML = `<option value="">${placeholder}</option>` +
+        items.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
+      select.disabled = items.length === 0;
+      // Restore value only if it still exists in the new filtered list, otherwise clear it
+      if (items.includes(prevVal)) {
+        select.value = prevVal;
+      } else {
+        select.value = '';
+      }
+    };
+
+    setSelectOptions(dom.filterProductType, productTypes, 'Product Type');
+    setSelectOptions(dom.filterCorrespondent, correspondents, 'Correspondent');
+    setSelectOptions(dom.filterCurrency, currencies, 'Currency');
+
+    isUpdatingDropdowns = false;
   }
 
   // =============================================================
-  //  SELECT COUNTRY
+  //  SELECT COUNTRY & APPLY
   // =============================================================
   function selectCountry(country) {
     currentCountry = country;
@@ -721,7 +748,6 @@
     });
     dom.countryNameDisplay.textContent = country;
     updateHeaderFlag(country);
-    populateFilterOptionsForCountry(country);
     applyFilters();
   }
 
@@ -752,6 +778,9 @@
 
     dom.statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
     renderFilteredResults(filtered);
+
+    // Update the dropdown options based on the current active filters
+    updateDropdownsForCountry(currentCountry);
   }
 
   // =============================================================
@@ -856,6 +885,8 @@
     });
   });
 
+  // All filter changes simply call applyFilters().
+  // The dropdowns automatically update in applyFilters() via updateDropdownsForCountry()
   dom.globalSearch.addEventListener('input', applyFilters);
   dom.filterProductType.addEventListener('change', applyFilters);
   dom.filterCorrespondent.addEventListener('change', applyFilters);
