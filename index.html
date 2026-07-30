@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AMIEC Products & Services</title>
+  <title>AMIEC Product Book</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --primary-green: #00d15c;
+      --dark-green: #009E4A;
+      --light-green-bg: #f0fdf4;
+      --dark-blue: #0f172a;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
@@ -37,7 +44,7 @@
     .sidebar-header h2 {
       font-size: 1.2rem;
       font-weight: 600;
-      color: #0a2540;
+      color: var(--dark-blue);
       margin-bottom: 8px;
     }
     .sidebar-header input {
@@ -50,8 +57,8 @@
       transition: 0.2s;
     }
     .sidebar-header input:focus {
-      border-color: #0a2540;
-      box-shadow: 0 0 0 3px rgba(10,37,64,0.08);
+      border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px rgba(0, 209, 92, 0.1);
     }
     .country-list {
       flex: 1;
@@ -69,8 +76,8 @@
     }
     .country-item:hover { background: #edf2f7; }
     .country-item.active {
-      background: #e6edf5;
-      border-left-color: #0a2540;
+      background: var(--light-green-bg);
+      border-left-color: var(--primary-green);
     }
     .country-item .flag-img {
       width: 28px;
@@ -110,19 +117,77 @@
       background: white;
     }
 
-    /* ----- Filter Bar ----- */
+    /* ----- Nium Style Top Navigation (Removed Financial Institutions Toggle) ----- */
+    .playbook-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 32px;
+      background: #ffffff;
+      border-bottom: 1px solid #eaedf2;
+      flex-shrink: 0;
+    }
+    .playbook-nav .brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .playbook-nav .brand span {
+      font-weight: 400;
+      color: #64748b;
+    }
+    .playbook-nav .links {
+      display: flex;
+      gap: 24px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #475569;
+    }
+    .playbook-nav .links a {
+      color: #475569;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .playbook-nav .links a:hover { color: #0f172a; }
+
+    /* ----- Nium Style Hero Banner ----- */
+    .playbook-hero {
+      background: var(--dark-blue);
+      padding: 40px 32px;
+      color: white;
+      flex-shrink: 0;
+    }
+    .playbook-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.02em;
+    }
+    .playbook-hero p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* ----- Al Mulla Theme Filter Bar ----- */
     .filter-bar {
       padding: 16px 32px;
       background: #fafcff;
       border-bottom: 1px solid #eaedf2;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
+      border-top: 4px solid var(--dark-green);
+      flex-shrink: 0;
     }
     .filter-bar input,
     .filter-bar select {
-      padding: 8px 12px;
+      padding: 8px 16px;
       border: 1px solid #dce1e8;
       border-radius: 8px;
       font-size: 0.9rem;
@@ -134,30 +199,41 @@
     }
     .filter-bar input:focus,
     .filter-bar select:focus {
-      border-color: #0a2540;
-      box-shadow: 0 0 0 3px rgba(10,37,64,0.08);
+      border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px rgba(0, 209, 92, 0.15);
+    }
+    .filter-bar select:disabled {
+      background: #f1f5f9;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
     .filter-bar .clear-btn {
-      padding: 6px 14px;
-      background: #f1f4f9;
-      border: 1px solid #dce1e8;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      padding: 8px 20px;
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      color: #475569;
-      transition: 0.15s;
+      transition: background 0.15s;
       white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 209, 92, 0.3);
     }
-    .filter-bar .clear-btn:hover { background: #e2e8f0; }
+    .filter-bar .clear-btn:hover { 
+      background: var(--dark-green); 
+      box-shadow: 0 4px 8px rgba(0, 209, 92, 0.4);
+    }
 
+    /* ----- Country Specific Header (Only Country Name) ----- */
     .main-header {
       padding: 12px 32px;
       border-bottom: 1px solid #eaedf2;
       background: #fafcff;
       display: flex;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      flex-shrink: 0;
     }
     .main-header .brand {
       display: flex;
@@ -175,22 +251,12 @@
       font-size: 2rem;
       line-height: 1;
     }
-    .main-header .brand .company-name {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #0a2540;
-    }
     .main-header .brand .country-name {
       font-size: 1.3rem;
-      font-weight: 400;
-      color: #64748b;
-    }
-    .main-header .brand .separator {
-      color: #cbd5e1;
-      font-weight: 300;
+      font-weight: 600;
+      color: #0f172a;
     }
     .main-header .stats {
-      margin-left: auto;
       font-size: 0.9rem;
       color: #475569;
       background: #f1f4f9;
@@ -223,7 +289,7 @@
       color: #94a3b8;
     }
 
-    /* ----- Accordion ----- */
+    /* ----- Product Accordion ----- */
     .product-group {
       margin-bottom: 24px;
       border: 1px solid #eaedf2;
@@ -254,8 +320,8 @@
     .product-group-header .title .badge {
       font-size: 0.7rem;
       font-weight: 600;
-      background: #dbeafe;
-      color: #1e40af;
+      background: var(--light-green-bg);
+      color: var(--dark-green);
       padding: 2px 12px;
       border-radius: 20px;
       text-transform: uppercase;
@@ -277,13 +343,13 @@
     }
     .product-group-body.open { display: block; }
 
-    /* ----- Product rows ----- */
     .product-row {
       margin-top: 20px;
       border: 1px solid #edf2f7;
       border-radius: 8px;
       padding: 16px 20px;
       background: #fafcff;
+      border-top: 2px solid var(--primary-green);
     }
     .product-row:first-of-type { margin-top: 16px; }
     .product-row-title {
@@ -351,25 +417,24 @@
     }
 
     /* Responsive */
+    @media (max-width: 1024px) {
+      .playbook-nav .links { display: none; }
+    }
     @media (max-width: 768px) {
       .app { flex-direction: column; height: auto; overflow: auto; }
       .sidebar { width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #eaedf2; }
       .main { height: auto; }
-      .filter-bar { padding: 12px 16px; flex-direction: column; align-items: stretch; }
+      .playbook-nav, .playbook-hero, .filter-bar, .main-header { padding: 16px; }
+      .playbook-hero h1 { font-size: 2rem; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
       .filter-bar input, .filter-bar select { min-width: unset; }
-      .main-header { padding: 12px 16px; flex-wrap: wrap; }
-      .main-header .brand .company-name { font-size: 1.1rem; }
-      .main-header .brand .country-name { font-size: 1rem; }
-      .main-body { padding: 16px 16px 40px; }
       .detail-grid { grid-template-columns: 1fr; }
       .detail-item .label { min-width: 100px; }
     }
     @media (max-width: 480px) {
-      .sidebar-header h2 { font-size: 1rem; }
-      .country-item { padding: 8px 12px; }
-      .main-header .brand .company-name { font-size: 0.95rem; }
-      .main-header .brand .country-name { font-size: 0.85rem; }
-      .main-header .brand .flag-img { width: 30px; height: 20px; }
+      .playbook-hero h1 { font-size: 1.5rem; }
+      .playbook-nav .brand { font-size: 1.1rem; }
+      .main-header .brand .country-name { font-size: 1.1rem; }
     }
 
     .loading, .error { padding: 40px; text-align: center; color: #475569; }
@@ -397,7 +462,25 @@
 
   <!-- Main -->
   <div class="main">
-    <!-- Filter Bar -->
+    
+    <!-- 1. Nium-style Navigation Bar (Toggle Removed) -->
+    <div class="playbook-nav">
+      <div class="brand">
+        AMIEC <span>Playbook</span>
+      </div>
+      <div class="links">
+        <a href="#">Changelog</a>
+        <a href="#">Download PDF</a>
+      </div>
+    </div>
+
+    <!-- 2. Nium-style Hero Banner with Big Heading -->
+    <div class="playbook-hero">
+      <h1>AMIEC Product Book</h1>
+      <p>Our guide to sending money using the AMIEC network.</p>
+    </div>
+
+    <!-- 3. Al Mulla Theme Filter Bar -->
     <div class="filter-bar">
       <input type="text" id="globalSearch" placeholder="🔍 Search all columns..." />
       <select id="filterProductType"><option value="">Product Type</option></select>
@@ -406,19 +489,17 @@
       <button class="clear-btn" id="clearFilters">✕ Clear</button>
     </div>
 
-    <!-- Header -->
+    <!-- 4. Country Header (AMIEC REMOVED from here) -->
     <div class="main-header">
       <div class="brand">
         <img id="headerFlagImg" class="flag-img" src="" alt="Flag" style="display:none;" />
         <span id="headerFlagText" class="flag-text">🌍</span>
-        <span class="company-name">AMIEC</span>
-        <span class="separator">–</span>
-        <span class="country-name" id="countryNameDisplay">Select a country</span>
+        <span class="country-name" id="countryNameDisplay" style="font-weight:600; font-size:1.3rem;">Select a country</span>
       </div>
       <div class="stats" id="statsDisplay">0 products</div>
     </div>
 
-    <!-- Body -->
+    <!-- 5. Body -->
     <div class="main-body" id="mainBody">
       <div class="placeholder">
         <h3>Pick a country from the left</h3>
@@ -434,9 +515,6 @@
   // =============================================================
   const EXCEL_URL = 'https://raw.githubusercontent.com/mohamedsaaif9924-web/AMIEC-Products/main/data.xlsx';
 
-  // =============================================================
-  //  COUNTRY -> FLAG EMOJI MAP (fallback)
-  // =============================================================
   const countryFlagEmoji = {
     "Afghanistan": "🇦🇫", "Albania": "🇦🇱", "Algeria": "🇩🇿", "Armenia": "🇦🇲",
     "Australia": "🇦🇺", "Azerbaijan": "🇦🇿", "Bahrain": "🇧🇭", "Bangladesh": "🇧🇩",
@@ -461,14 +539,10 @@
     "Uzbekistan": "🇺🇿", "Vietnam": "🇻🇳"
   };
 
-  // =============================================================
-  //  GET FLAG IMAGE URL (flagpedia)
-  // =============================================================
   function getFlagImageUrl(country) {
     const code = country.toLowerCase().replace(/ /g, '-');
     return `https://flagpedia.net/data/flags/h60/${code}.webp`;
   }
-
   function getFlagEmoji(country) {
     return countryFlagEmoji[country] || '🌍';
   }
@@ -482,38 +556,44 @@
   let countryDataMap = {};
   let currentCountry = null;
 
-  // DOM refs
-  const countryListEl = document.getElementById('countryList');
-  const countrySearch = document.getElementById('countrySearch');
-  const mainBody = document.getElementById('mainBody');
-  const countryNameDisplay = document.getElementById('countryNameDisplay');
-  const headerFlagImg = document.getElementById('headerFlagImg');
-  const headerFlagText = document.getElementById('headerFlagText');
-  const statsDisplay = document.getElementById('statsDisplay');
-  const globalSearch = document.getElementById('globalSearch');
-  const filterProductType = document.getElementById('filterProductType');
-  const filterCorrespondent = document.getElementById('filterCorrespondent');
-  const filterCurrency = document.getElementById('filterCurrency');
-  const clearFiltersBtn = document.getElementById('clearFilters');
+  // Flexible Column Mapping to ensure dropdowns never break
+  let productTypeKey = 'Product Type';
+  let correspondentKey = 'Correspondent';
+  let currencyKey = 'Currency';
+
+  const dom = {
+    countryList: document.getElementById('countryList'),
+    countrySearch: document.getElementById('countrySearch'),
+    mainBody: document.getElementById('mainBody'),
+    countryNameDisplay: document.getElementById('countryNameDisplay'),
+    headerFlagImg: document.getElementById('headerFlagImg'),
+    headerFlagText: document.getElementById('headerFlagText'),
+    statsDisplay: document.getElementById('statsDisplay'),
+    globalSearch: document.getElementById('globalSearch'),
+    filterProductType: document.getElementById('filterProductType'),
+    filterCorrespondent: document.getElementById('filterCorrespondent'),
+    filterCurrency: document.getElementById('filterCurrency'),
+    clearFiltersBtn: document.getElementById('clearFilters')
+  };
 
   // =============================================================
   //  HELPERS
   // =============================================================
-  function escapeHtml(text) {
+  const escapeHtml = (text) => {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-  }
-  function isActive(value) {
+  };
+  const isActive = (value) => {
     const v = (value || '').toString().toLowerCase();
     return v.includes('yes') || v.includes('active');
-  }
-  function badgeHtml(value) {
+  };
+  const badgeHtml = (value) => {
     const active = isActive(value);
     return `<span class="badge ${active ? '' : 'inactive'}">${escapeHtml(value)}</span>`;
-  }
-  function interfaceBadge(value) {
+  };
+  const interfaceBadge = (value) => {
     if (!value) return escapeHtml(value);
     const lv = value.toLowerCase();
     let cls = 'badge';
@@ -521,36 +601,28 @@
     else if (lv.includes('sftp')) cls += ' sftp';
     else if (lv.includes('file') || lv.includes('upload')) cls += ' file';
     return `<span class="${cls}">${escapeHtml(value)}</span>`;
-  }
+  };
 
-  // =============================================================
-  //  UPDATE HEADER FLAG
-  // =============================================================
-  function updateHeaderFlag(country) {
+  const updateHeaderFlag = (country) => {
     const imgUrl = getFlagImageUrl(country);
     const emoji = getFlagEmoji(country);
-
-    // Try to show image first
-    headerFlagImg.style.display = 'block';
-    headerFlagImg.src = imgUrl;
-    headerFlagImg.alt = country + ' flag';
-    headerFlagImg.onerror = function() {
-      // If image fails, show emoji
-      headerFlagImg.style.display = 'none';
-      headerFlagText.style.display = 'inline';
-      headerFlagText.textContent = emoji;
+    dom.headerFlagImg.style.display = 'block';
+    dom.headerFlagImg.src = imgUrl;
+    dom.headerFlagImg.alt = country + ' flag';
+    dom.headerFlagImg.onerror = function() {
+      dom.headerFlagImg.style.display = 'none';
+      dom.headerFlagText.style.display = 'inline';
+      dom.headerFlagText.textContent = emoji;
     };
-    headerFlagText.style.display = 'none';
-
-    // If image loads successfully, hide emoji
-    headerFlagImg.onload = function() {
-      headerFlagImg.style.display = 'block';
-      headerFlagText.style.display = 'none';
+    dom.headerFlagText.style.display = 'none';
+    dom.headerFlagImg.onload = function() {
+      dom.headerFlagImg.style.display = 'block';
+      dom.headerFlagText.style.display = 'none';
     };
-  }
+  };
 
   // =============================================================
-  //  FETCH & PARSE
+  //  FETCH & MAP COLUMN NAMES ROBUSTLY
   // =============================================================
   async function loadData() {
     try {
@@ -561,8 +633,22 @@
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
       if (!json.length) throw new Error('No data found in the Excel file.');
+      
       allData = json;
       headers = Object.keys(allData[0]);
+
+      // Auto-detect columns (spaces, underscores, or lowercase variants)
+      const findHeader = (possibleNames) => {
+        for (let name of possibleNames) {
+          const found = headers.find(h => h.toLowerCase().replace(/\s/g, '') === name.toLowerCase().replace(/\s/g, ''));
+          if (found) return found;
+        }
+        return possibleNames[0]; // Fallback
+      };
+      productTypeKey = findHeader(['Product Type', 'Product_Type', 'producttype', 'ProductType']);
+      correspondentKey = findHeader(['Correspondent', 'correspondent', 'Correspondent']);
+      currencyKey = findHeader(['Currency', 'currency', 'Currency']);
+
       // Group by country
       const countryMap = {};
       allData.forEach(row => {
@@ -572,10 +658,11 @@
       });
       countries = Object.keys(countryMap).sort();
       countryDataMap = countryMap;
+      
       renderCountryList(countries);
       if (countries.length > 0) selectCountry(countries[0]);
     } catch (err) {
-      mainBody.innerHTML = `
+      dom.mainBody.innerHTML = `
         <div class="error">
           ❌ Failed to load data<br/>
           <span style="font-size:0.9rem;">${err.message}</span><br/>
@@ -591,7 +678,7 @@
   //  RENDER SIDEBAR
   // =============================================================
   function renderCountryList(countryArray) {
-    countryListEl.innerHTML = '';
+    dom.countryList.innerHTML = '';
     countryArray.forEach(country => {
       const count = countryDataMap[country] ? countryDataMap[country].length : 0;
       const div = document.createElement('div');
@@ -606,36 +693,42 @@
         <span class="count">${count}</span>
       `;
       div.addEventListener('click', () => selectCountry(country));
-      countryListEl.appendChild(div);
+      dom.countryList.appendChild(div);
     });
   }
 
   // =============================================================
-  //  POPULATE FILTERS FOR A SPECIFIC COUNTRY
+  //  POPULATE & ENABLE FILTERS FOR A SPECIFIC COUNTRY
   // =============================================================
   function populateFilterOptionsForCountry(country) {
     const rows = countryDataMap[country] || [];
-    const productTypes = [...new Set(rows.map(r => r['Product Type']).filter(Boolean))].sort();
-    const correspondents = [...new Set(rows.map(r => r['Correspondent']).filter(Boolean))].sort();
-    const currencies = [...new Set(rows.map(r => r['Currency']).filter(Boolean))].sort();
+    const productTypes = [...new Set(rows.map(r => r[productTypeKey]).filter(Boolean))].sort();
+    const correspondents = [...new Set(rows.map(r => r[correspondentKey]).filter(Boolean))].sort();
+    const currencies = [...new Set(rows.map(r => r[currencyKey]).filter(Boolean))].sort();
 
-    const currentProduct = filterProductType.value;
-    const currentCorr = filterCorrespondent.value;
-    const currentCurr = filterCurrency.value;
+    const currentProduct = dom.filterProductType.value;
+    const currentCorr = dom.filterCorrespondent.value;
+    const currentCurr = dom.filterCurrency.value;
 
-    filterProductType.innerHTML = '<option value="">Product Type</option>' +
+    dom.filterProductType.innerHTML = '<option value="">Product Type</option>' +
       productTypes.map(pt => `<option value="${escapeHtml(pt)}">${escapeHtml(pt)}</option>`).join('');
-    filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' +
+    dom.filterCorrespondent.innerHTML = '<option value="">Correspondent</option>' +
       correspondents.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    filterCurrency.innerHTML = '<option value="">Currency</option>' +
+    dom.filterCurrency.innerHTML = '<option value="">Currency</option>' +
       currencies.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 
-    if (productTypes.includes(currentProduct)) filterProductType.value = currentProduct;
-    else filterProductType.value = '';
-    if (correspondents.includes(currentCorr)) filterCorrespondent.value = currentCorr;
-    else filterCorrespondent.value = '';
-    if (currencies.includes(currentCurr)) filterCurrency.value = currentCurr;
-    else filterCurrency.value = '';
+    // Disable dropdown if no options exist to avoid confusion
+    dom.filterProductType.disabled = productTypes.length === 0;
+    dom.filterCorrespondent.disabled = correspondents.length === 0;
+    dom.filterCurrency.disabled = currencies.length === 0;
+
+    // Restore previous selections if they exist
+    if (productTypes.includes(currentProduct)) dom.filterProductType.value = currentProduct;
+    else dom.filterProductType.value = '';
+    if (correspondents.includes(currentCorr)) dom.filterCorrespondent.value = currentCorr;
+    else dom.filterCorrespondent.value = '';
+    if (currencies.includes(currentCurr)) dom.filterCurrency.value = currentCurr;
+    else dom.filterCurrency.value = '';
   }
 
   // =============================================================
@@ -646,7 +739,7 @@
     document.querySelectorAll('.country-item').forEach(el => {
       el.classList.toggle('active', el.dataset.country === country);
     });
-    countryNameDisplay.textContent = country;
+    dom.countryNameDisplay.textContent = country;
     updateHeaderFlag(country);
     populateFilterOptionsForCountry(country);
     applyFilters();
@@ -658,10 +751,10 @@
   function applyFilters() {
     if (!currentCountry) return;
     const rows = countryDataMap[currentCountry] || [];
-    const search = globalSearch.value.trim().toLowerCase();
-    const productType = filterProductType.value;
-    const correspondent = filterCorrespondent.value;
-    const currency = filterCurrency.value;
+    const search = dom.globalSearch.value.trim().toLowerCase();
+    const productType = dom.filterProductType.value;
+    const correspondent = dom.filterCorrespondent.value;
+    const currency = dom.filterCurrency.value;
 
     let filtered = rows.filter(row => {
       if (search) {
@@ -671,13 +764,13 @@
         });
         if (!match) return false;
       }
-      if (productType && row['Product Type'] !== productType) return false;
-      if (correspondent && row['Correspondent'] !== correspondent) return false;
-      if (currency && row['Currency'] !== currency) return false;
+      if (productType && row[productTypeKey] !== productType) return false;
+      if (correspondent && row[correspondentKey] !== correspondent) return false;
+      if (currency && row[currencyKey] !== currency) return false;
       return true;
     });
 
-    statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+    dom.statsDisplay.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
     renderFilteredResults(filtered);
   }
 
@@ -686,13 +779,13 @@
   // =============================================================
   function renderFilteredResults(rows) {
     if (rows.length === 0) {
-      mainBody.innerHTML = `<div class="placeholder"><h3>No products match your filters</h3><p>Try adjusting the filters above.</p></div>`;
+      dom.mainBody.innerHTML = `<div class="placeholder"><h3>No products match your filters</h3><p>Try adjusting the filters above.</p></div>`;
       return;
     }
 
     const groups = {};
     rows.forEach(row => {
-      const key = row['Correspondent'] || 'Uncategorized';
+      const key = row[correspondentKey] || 'Uncategorized';
       if (!groups[key]) groups[key] = [];
       groups[key].push(row);
     });
@@ -701,7 +794,7 @@
     const groupNames = Object.keys(groups).sort();
     groupNames.forEach(groupName => {
       const items = groups[groupName];
-      const currencies = [...new Set(items.map(r => r['Currency']).filter(Boolean))].join(', ');
+      const currencies = [...new Set(items.map(r => r[currencyKey]).filter(Boolean))].join(', ');
 
       html += `
         <div class="product-group">
@@ -737,9 +830,9 @@
 
         const rowTitle = `
           <div class="product-row-title">
-            <span class="currency-badge">${escapeHtml(row['Correspondent'] || '')}</span>
-            ${row['Currency'] ? `<span class="currency-badge">${escapeHtml(row['Currency'])}</span>` : ''}
-            ${row['Product Type'] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row['Product Type'])}</span>` : ''}
+            <span class="currency-badge">${escapeHtml(row[correspondentKey] || '')}</span>
+            ${row[currencyKey] ? `<span class="currency-badge">${escapeHtml(row[currencyKey])}</span>` : ''}
+            ${row[productTypeKey] ? `<span class="currency-badge" style="background:#e6edf5;">${escapeHtml(row[productTypeKey])}</span>` : ''}
           </div>
         `;
 
@@ -757,7 +850,7 @@
       `;
     });
 
-    mainBody.innerHTML = html;
+    dom.mainBody.innerHTML = html;
   }
 
   // =============================================================
@@ -775,7 +868,7 @@
   // =============================================================
   //  EVENT LISTENERS
   // =============================================================
-  countrySearch.addEventListener('input', function() {
+  dom.countrySearch.addEventListener('input', function() {
     const query = this.value.toLowerCase().trim();
     document.querySelectorAll('.country-item').forEach(item => {
       const name = item.querySelector('.name').textContent.toLowerCase();
@@ -783,16 +876,16 @@
     });
   });
 
-  globalSearch.addEventListener('input', applyFilters);
-  filterProductType.addEventListener('change', applyFilters);
-  filterCorrespondent.addEventListener('change', applyFilters);
-  filterCurrency.addEventListener('change', applyFilters);
+  dom.globalSearch.addEventListener('input', applyFilters);
+  dom.filterProductType.addEventListener('change', applyFilters);
+  dom.filterCorrespondent.addEventListener('change', applyFilters);
+  dom.filterCurrency.addEventListener('change', applyFilters);
 
-  clearFiltersBtn.addEventListener('click', function() {
-    globalSearch.value = '';
-    filterProductType.value = '';
-    filterCorrespondent.value = '';
-    filterCurrency.value = '';
+  dom.clearFiltersBtn.addEventListener('click', function() {
+    dom.globalSearch.value = '';
+    dom.filterProductType.value = '';
+    dom.filterCorrespondent.value = '';
+    dom.filterCurrency.value = '';
     applyFilters();
   });
 
