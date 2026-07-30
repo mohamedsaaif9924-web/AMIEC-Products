@@ -117,7 +117,7 @@
       background: white;
     }
 
-    /* ----- Nium Style Top Navigation (Removed Financial Institutions Toggle) ----- */
+    /* ----- Nium Style Top Navigation (Links & Toggle Removed) ----- */
     .playbook-nav {
       display: flex;
       justify-content: space-between;
@@ -139,19 +139,6 @@
       font-weight: 400;
       color: #64748b;
     }
-    .playbook-nav .links {
-      display: flex;
-      gap: 24px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #475569;
-    }
-    .playbook-nav .links a {
-      color: #475569;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .playbook-nav .links a:hover { color: #0f172a; }
 
     /* ----- Nium Style Hero Banner ----- */
     .playbook-hero {
@@ -417,9 +404,6 @@
     }
 
     /* Responsive */
-    @media (max-width: 1024px) {
-      .playbook-nav .links { display: none; }
-    }
     @media (max-width: 768px) {
       .app { flex-direction: column; height: auto; overflow: auto; }
       .sidebar { width: 100%; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #eaedf2; }
@@ -463,14 +447,10 @@
   <!-- Main -->
   <div class="main">
     
-    <!-- 1. Nium-style Navigation Bar (Toggle Removed) -->
+    <!-- 1. Nium-style Navigation Bar (Links Removed) -->
     <div class="playbook-nav">
       <div class="brand">
         AMIEC <span>Playbook</span>
-      </div>
-      <div class="links">
-        <a href="#">Changelog</a>
-        <a href="#">Download PDF</a>
       </div>
     </div>
 
